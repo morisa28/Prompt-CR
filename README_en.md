@@ -1,161 +1,48 @@
-# Prompt Engineering Skill
+# Prompt Engineering Skill Hub
 
-A Codex skill for turning vague requests, complex development tasks, plan-mode instructions, PDF/document analysis tasks, and prompt optimization requests into clearer, more specific, and more executable agent instructions.
+This is a distributable copy of the `prompt-engineering` skill. It turns vague requests into high-quality prompts that can be executed by Codex, Codex CLI, Claude Code, Gemini CLI, ChatGPT, and other AI tools.
 
-This is not a generic prompt-writing tutorial. Its purpose is to help Codex automatically add task goals, context, input materials, execution steps, constraints, output formats, acceptance criteria, and self-check requirements when generating or improving prompts.
+## Contents
 
-## When to Use
+- `SKILL.md`: Main entry point with purpose, trigger rules, branch categories, and quality standards.
+- `router.md`: Routing system for selecting a primary branch and optional auxiliary branches.
+- `common-principles.md`: Shared prompt engineering principles.
+- `templates.md`: Copy-ready cross-branch templates.
+- `checklists.md`: Executable quality checklists.
+- `examples.md`: Complete cross-branch examples.
+- `branches/`: Scenario-specific branch library with 45 branches.
 
-Use this skill when:
+## Branch Categories
 
-- The user asks to optimize a prompt.
-- The user asks for a more detailed prompt or a prompt better suited for Codex.
-- The user asks for a prompt for Codex, Gemini CLI, or Claude Code.
-- The user provides a vague request that needs to become an executable task.
-- The user asks Codex to plan first and avoid immediate code changes.
-- The user asks for complex feature development, bug fixing, refactoring, or multi-stage iteration.
-- The user asks to read a PDF, document, image, or repository and produce structured task instructions.
-- The output needs explicit constraints, acceptance criteria, testing instructions, and risk controls.
+- `general-prompt`: prompt review, rewrite, expansion, compression, and template building.
+- `software-engineering`: plan mode, feature development, debugging, refactoring, testing, code review, repository analysis, CLI agents, security threat modeling, DevOps/CI, database migration, and API design.
+- `documents-research`: documentation analysis, PDF to skill, research synthesis, academic writing, and report writing.
+- `data-analytics`: data analysis, spreadsheet analysis, and visualization dashboards.
+- `product-design-business`: product requirements, UX/UI design, business strategy, and marketing content.
+- `ai-systems`: knowledge base and RAG prompts.
+- `business-operations`: customer service QA and recruiting evaluation.
+- `education`: curriculum design.
+- `creative-design`: game design.
+- `multimodal`: image, video/audio, and visual 3D interaction tasks.
+- `domain-specific`: legal, medical, finance, and tutoring prompts.
+- `communication`: translation/localization and roleplay simulation.
+- `automation`: automation workflows.
+- `meta`: meta skill builder.
 
-Do not use this skill for casual chat, short phrase translation, simple Q&A, or cases where the user explicitly does not want a structured prompt.
+## How To Use
 
-## What This Skill Does
+1. Read `SKILL.md`.
+2. Read `router.md` and choose the primary and auxiliary branches.
+3. Apply the shared rules in `common-principles.md`.
+4. Use `templates.md` and the selected branch template to draft the prompt.
+5. Validate the prompt with `checklists.md` and the branch checklist.
+6. Refer to `examples.md` when a concrete pattern is useful.
 
-This skill guides Codex to:
+## Quality Standard
 
-- Organize prompts around Persona, Task, Context, and Format.
-- Rewrite vague goals into verifiable task goals.
-- Specify input materials such as file paths, logs, screenshots, PDFs, URLs, or commands.
-- Break complex tasks into stages, each with a target, input, output, and acceptance criteria.
-- Write strong constraints, including must-do items, prohibited actions, preferences, and exceptions.
-- Generate plan-mode prompts that analyze first and do not modify files.
-- Add code-task rules such as reading files first, making minimal changes, validating with tests, and avoiding unrelated refactors.
-- Add PDF/document-task rules such as structure reading, rule extraction, template generation, and uncertainty marking.
-- Add self-check and failure-handling rules to the final prompt.
+A final prompt must include a clear objective, sufficient context, named inputs, concrete execution steps, strong constraints, explicit output format, testable acceptance criteria, risk controls, uncertainty handling, and target-tool adaptation.
 
-## Directory Structure
+## Copy Location
 
-```text
-prompt-engineering/
-├── SKILL.md       # Main skill file loaded by Codex
-├── templates.md   # Copy-ready prompt templates
-├── checklists.md  # Prompt quality checklists
-├── examples.md    # Examples from ordinary requests to strong execution prompts
-├── README.md      # Chinese README
-└── README_en.md   # English README
-```
-
-Codex uses `SKILL.md` to determine when the skill should be triggered. `templates.md`, `checklists.md`, and `examples.md` are loaded only when detailed templates, checklists, or examples are useful.
-
-## Installation
-
-### Install as a Global Codex Skill
-
-Linux or WSL:
-
-```bash
-mkdir -p ~/.codex/skills
-cp -a prompt-engineering ~/.codex/skills/
-```
-
-Windows:
-
-```powershell
-New-Item -ItemType Directory -Force "$env:USERPROFILE\.codex\skills" | Out-Null
-Copy-Item -Recurse -Force ".\prompt-engineering" "$env:USERPROFILE\.codex\skills\"
-```
-
-After installation, start a new Codex session so the skill list can be reloaded.
-
-### Install as a Project-Level Codex Skill
-
-Place the folder under the project root:
-
-```text
-.codex/skills/prompt-engineering/
-```
-
-Project-level installation is useful when you only want this skill available for a specific repository.
-
-## Usage
-
-After installation, you can ask:
-
-```text
-Rewrite this requirement into a prompt better suited for Codex.
-```
-
-```text
-Make Codex plan first and avoid changing code immediately.
-```
-
-```text
-Read this PDF, extract its methods, and turn them into a reusable skill.
-```
-
-You can also trigger it explicitly:
-
-```text
-Use the prompt-engineering skill to rewrite the following request into an executable Codex prompt.
-```
-
-Explicitly naming the skill is more reliable, especially if the current session has not reloaded newly installed skills.
-
-## Included Templates
-
-`templates.md` includes 10 copy-ready templates:
-
-- General Codex task prompt template
-- Prompt optimization template
-- Code-fix prompt template
-- Refactoring prompt template
-- Document reading and summary prompt template
-- Deep PDF analysis prompt template
-- Complex feature development prompt template
-- Multi-stage iteration prompt template
-- Plan-mode task planning prompt template
-- Visual/3D/interaction task prompt template
-
-## Quality Checks
-
-`checklists.md` provides checklists for evaluating whether a generated prompt is ready to use:
-
-- Does it have a clear task goal?
-- Does it name the working directory or execution environment?
-- Does it list input materials?
-- Does it include execution steps?
-- Does it include hard constraints and prohibited actions?
-- Does it specify the output format?
-- Does it include acceptance criteria?
-- Does it require self-checks?
-- Does it avoid vague language?
-- Does it match the task type?
-
-## Examples
-
-`examples.md` contains 4 complete examples:
-
-- Turning "help me optimize this prompt" into a strong Codex prompt.
-- Turning "my Vue project has an error, fix it" into a code-fix prompt.
-- Turning "read this PDF and summarize the techniques" into a PDF-to-skill prompt.
-- Turning "build a draggable knob in a 3D interactive webpage" into a multi-stage development prompt.
-
-## Maintenance Notes
-
-- When changing trigger behavior, update the frontmatter `description` in `SKILL.md` first.
-- Put long new templates in `templates.md` instead of growing `SKILL.md`.
-- Put new quality rules in `checklists.md`.
-- Put complete examples in `examples.md`.
-- Keep `SKILL.md` focused on core workflows and invocation rules.
-- Before publishing, make sure `SKILL.md` still has valid YAML frontmatter.
-
-## Notes
-
-- Newly installed or modified skills usually require a new Codex session to become reliably available.
-- Automatic triggering depends on how Codex interprets the user request. Explicitly saying `use the prompt-engineering skill` is more reliable.
-- In mixed Windows/WSL setups, Codex reads the skills directory available to the environment where it is running. If Codex runs in WSL, make sure the skill is available under WSL-accessible `~/.codex/skills/` or project `.codex/skills/`.
-- This skill does not require external packages or network access.
-
-## License
-
-Before publishing this skill on GitHub, add a suitable `LICENSE` file and update this section with the chosen license.
+- Windows path: `F:\file\wsl_shared_files\study\new skill\prompt-engineering`
+- WSL path: `/home/just_monika/win_share/study/new skill/prompt-engineering`
