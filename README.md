@@ -42,7 +42,4 @@
 
 最终 prompt 必须具备：明确目标、充分上下文、清晰输入、具体步骤、强约束、输出格式、验收标准、风险控制、不确定性标注，并能直接交给目标 AI 工具执行。
 
-## 副本位置
 
-- Windows 路径：`F:\file\wsl_shared_files\study\new skill\prompt-engineering`
-- WSL 路径：`/home/just_monika/win_share/study/new skill/prompt-engineering`
