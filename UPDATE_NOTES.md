@@ -4,9 +4,6 @@
 
 - 副本名称：`prompt-engineering`
 - 生成日期：2026-04-27
-- Windows 路径：`F:\file\wsl_shared_files\study\new skill\prompt-engineering`
-- WSL 路径：`/home/just_monika/win_share/study/new skill/prompt-engineering`
-- 来源路径：`/home/just_monika/win_share/.codex/skills/prompt-engineering`
 
 ## 本次副本包含
 
