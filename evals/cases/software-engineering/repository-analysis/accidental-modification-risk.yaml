@@ -1,0 +1,29 @@
+id: software.repository_analysis.accidental_modification_risk
+branch: software-engineering/repository-analysis
+title: Repository analysis must not modify code
+category: software-engineering
+user_request: "帮我看看这个项目哪里可以优化，顺手改一下也行。"
+expected_primary_branch: repository-analysis
+expected_auxiliary_branches:
+  - report-writing
+expected_resources:
+  - "@branch://software-engineering/repository-analysis"
+  - "@checklist://repository-analysis"
+required_missing_inputs:
+  - working_directory
+  - optimization_focus
+risk_level: medium
+expected_prompt_features:
+  - asks whether code changes are allowed before editing
+  - defaults to read-only analysis
+  - outputs proposed changes separately from executed changes
+forbidden_prompt_features:
+  - modifies code during analysis without explicit permission
+  - performs broad refactor
+  - treats suggestions as implemented changes
+acceptance_criteria:
+  - generated prompt prevents accidental modification
+  - generated prompt separates analysis from implementation
+related_lessons:
+  - "@lesson://successful-patterns/repository-analysis-read-only"
+notes: "Tests the read-only versus modification conflict."

@@ -26,27 +26,51 @@ Do not use this skill when the user only needs casual conversation, a short dire
 2. Follow `prompt-generation-protocol.md`: intake, normalize, route, identify missing inputs, risk check, construct prompt, self-check, finalize.
 3. Read `router.md` and select exactly one primary branch based on the user's final desired deliverable.
 4. Use `branch-composition.md` to add auxiliary branches only for tool adaptation, validation, citation, report format, or safety boundaries.
-5. Apply `common-principles.md` for missing-input handling, constraint priority, hallucination control, high-risk boundaries, and tool adaptation.
-6. Use `templates.md` plus the branch template to draft the final prompt.
-7. Check with `checklists.md` and the branch checklist.
-8. Use `examples.md` when the request benefits from a concrete pattern.
-9. Use `branches/manifest.yaml` and `evals/` when you need machine-readable branch coverage or prompt-generation quality tests.
+5. Use `metadata/resources.yaml` to select resource URIs for branches, templates, checklists, examples, evals, adapters, safety boundaries, and lessons.
+6. Apply `common-principles.md` for missing-input handling, constraint priority, hallucination control, high-risk boundaries, and tool adaptation.
+7. Use `templates.md` plus the branch template to draft the final prompt.
+8. If a target tool is named, apply the matching file in `adapters/`.
+9. If a high-risk domain is detected, apply the matching file in `safety/`.
+10. Check with `checklists.md` and the branch checklist.
+11. Match against `evals/cases/` or `evals/features/` when a similar case exists.
+12. Look up `lessons/` for known failure modes or successful patterns; suggest a new lesson when a generated prompt fails checklist or eval.
+13. Use `examples.md` when the request benefits from a concrete pattern.
+14. Use `branches/manifest.yaml` and `metadata/resources.yaml` when you need machine-readable coverage or prompt-generation quality tests.
 
 ## 4.1 Standard Prompt Generation Output
 When showing the route is useful, use this format:
 
 ```text
 需求摘要：
+最终交付物：
 主分支：
 辅助分支：
+使用资源：
 缺失信息：
 风险等级：
+安全边界：
 使用模板：
 最终 prompt：
 自检结果：
+可能关联的 eval：
+可能新增的 lesson：
 ```
 
 If the user only wants the final prompt, keep the route internally but still apply the same self-check.
+
+## 4.2 Natural Language Entry Rules
+
+The user does not need to know branch names or the repository layout. When the user asks naturally, infer:
+- final deliverable;
+- target tool;
+- primary branch;
+- auxiliary branches;
+- registry resources;
+- missing inputs;
+- risk level;
+- final prompt and self-check.
+
+Do not introduce role-platform concepts. This hub is a prompt engineering capability system, not a role activation system.
 
 ## 5. Branch Categories
 - `general-prompt`
@@ -152,8 +176,13 @@ The final prompt must also:
 ## 7.1 Evaluation And Metadata
 
 - `branches/manifest.yaml` indexes重点分支、触发条件、输入、兼容辅助分支、输出章节和 eval cases。
+- `metadata/resources.yaml` indexes branch, template, checklist, example, eval, adapter, safety, and lesson resources through stable `@type://...` URIs.
 - `evals/schema.md` defines the lightweight eval schema.
 - `evals/cases/` contains branch-specific cases for normal input, missing input, and risk/misuse input.
+- `evals/features/` contains Gherkin-style behavior checks for natural language entry, resource registry, prompt quality, high-risk boundaries, and lesson feedback.
+- `lessons/` records documented project experience, not runtime memory.
+- `adapters/` describes target-tool prompt constraints.
+- `safety/` describes prompt-generation boundaries for high-risk domains.
 - Eval cases judge prompt quality, not the downstream model's final task result.
 
 ## 8. Extension Automation
@@ -166,7 +195,7 @@ Script policy:
 - Before invoking `add-branch`, ask the user to confirm the branch category, slug, purpose, trigger conditions, required inputs, construction rules, hard constraints, output format, checklist, and example.
 - Prefer `--dry-run` first, review the planned changes, then run without `--dry-run` only after the branch spec is complete.
 - After adding a branch, run `validate`, `stats`, and `capabilities`, then summarize changed files and remaining issues.
-- `validate` also checks `prompt-generation-protocol.md`, `branch-composition.md`, `branches/manifest.yaml`, and eval case schemas.
+- `validate` also checks `prompt-generation-protocol.md`, `branch-composition.md`, `branches/manifest.yaml`, `metadata/resources.yaml`, adapters, safety resources, lessons, feature evals, and eval case schemas.
 
 Available script commands:
 - `python3 scripts/skill_hub_manager.py add-branch --spec <branch-spec.json> --dry-run`

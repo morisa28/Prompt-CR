@@ -1,0 +1,32 @@
+id: software.repository_analysis.improvement_report
+branch: software-engineering/repository-analysis
+title: Repository analysis with improvement report
+category: software-engineering
+user_request: "分析这个仓库的结构、核心模块、风险，并输出改进建议，不要改代码。"
+expected_primary_branch: repository-analysis
+expected_auxiliary_branches:
+  - report-writing
+expected_resources:
+  - "@branch://software-engineering/repository-analysis"
+  - "@template://repository-analysis/read-only"
+  - "@checklist://repository-analysis"
+required_missing_inputs:
+  - working_directory
+  - focus_areas
+  - output_depth
+risk_level: medium
+expected_prompt_features:
+  - enforces read-only analysis
+  - requires file tree, entry points, dependencies, modules, and data flow
+  - separates facts from inferences
+  - outputs prioritized improvement recommendations
+forbidden_prompt_features:
+  - edits files
+  - runs destructive commands
+  - invents architecture details
+acceptance_criteria:
+  - generated prompt is suitable for a read-only coding agent analysis
+  - generated prompt includes evidence and limitations
+related_lessons:
+  - "@lesson://successful-patterns/repository-analysis-read-only"
+notes: "Complements existing repository-analysis basic case."

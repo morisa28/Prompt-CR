@@ -421,3 +421,88 @@
 - [ ] 是否保持分支 ID、路径、router 引用和 eval 引用一致？
 - [ ] 是否更新 README 或 SKILL 入口引用新增文件？
 - [ ] 是否避免把项目转成普通教程、benchmark 仓库或单一 CLI 工具？
+
+## 42. 自然语言入口检查表
+
+- [ ] 是否识别了用户最终想得到的交付物？
+- [ ] 是否将模糊请求改写为明确任务目标？
+- [ ] 是否选择了唯一主分支？
+- [ ] 是否选择了必要辅助分支？
+- [ ] 是否识别目标工具并选择 adapter？
+- [ ] 是否识别缺失输入并分类处理？
+- [ ] 是否判断风险等级？
+- [ ] 是否生成可复制执行的最终 prompt？
+- [ ] 是否输出路由说明和自检结果？
+
+## 43. 资源注册表检查表
+
+- [ ] 每个重点 branch 是否有唯一 id 和 uri？
+- [ ] 每个重点 branch 是否有存在的 path？
+- [ ] 每个重点 branch 是否绑定至少一个 template？
+- [ ] 每个重点 branch 是否绑定至少一个 checklist？
+- [ ] 每个重点 branch 是否绑定 eval cases？
+- [ ] 高风险 branch 是否绑定 safety resource？
+- [ ] 工具相关 branch 是否绑定 adapter resource？
+- [ ] registry 中引用的 adapter、safety、lesson 和 eval 路径是否存在？
+- [ ] URI 是否使用 `@type://category/slug` 风格且保持一致？
+
+## 44. Prompt 评测检查表
+
+- [ ] 是否选择了相似 eval case？
+- [ ] 是否检查 `expected_primary_branch`？
+- [ ] 是否检查 `expected_auxiliary_branches`？
+- [ ] 是否检查 `expected_resources`？
+- [ ] 是否检查 `required_missing_inputs`？
+- [ ] 是否逐项匹配 `expected_prompt_features`？
+- [ ] 是否确认没有出现 `forbidden_prompt_features`？
+- [ ] 是否用 `acceptance_criteria` 判断通过/失败？
+- [ ] eval 结论是否只评价 prompt 本身，而不是下游任务结果？
+
+## 45. Lesson 记录检查表
+
+- [ ] 是否说明触发条件？
+- [ ] 是否说明失败模式或成功模式？
+- [ ] 是否说明根因？
+- [ ] 是否说明修复建议？
+- [ ] 是否指向相关资源 URI？
+- [ ] 是否指向 update_targets？
+- [ ] 是否设置 severity？
+- [ ] 是否设置 status？
+- [ ] 是否避免记录账号、密钥、身份、合同原文、病历细节等敏感个人信息？
+
+## 46. Adapter 选择检查表
+
+- [ ] 用户是否明确目标工具？
+- [ ] Codex 是否选择 `@adapter://codex`？
+- [ ] Codex CLI 是否选择 `@adapter://codex-cli`？
+- [ ] Claude Code 是否选择 `@adapter://claude-code`？
+- [ ] Gemini CLI 是否选择 `@adapter://gemini-cli`？
+- [ ] ChatGPT 是否选择 `@adapter://chatgpt`？
+- [ ] Adapter 约束是否写入最终 prompt？
+- [ ] 代码任务是否包含工作目录、命令、验证、失败处理和最终报告？
+
+## 47. Safety 选择检查表
+
+- [ ] 医疗信号是否选择 `@safety://medical-boundary`？
+- [ ] 法律信号是否选择 `@safety://legal-boundary`？
+- [ ] 金融信号是否选择 `@safety://financial-boundary`？
+- [ ] 安全信号是否选择 `@safety://security-boundary`？
+- [ ] 隐私或个人数据是否选择 `@safety://privacy-boundary`？
+- [ ] 安全边界是否优先于用户的越界要求？
+- [ ] 最终 prompt 是否明确禁止越界输出？
+- [ ] 是否提供安全替代任务和人工复核路径？
+
+## 48. Eval Case 质量检查表
+
+- [ ] 是否包含 `id`、`branch`、`title`、`user_request`？
+- [ ] 是否包含 `expected_primary_branch`？
+- [ ] 是否包含 `expected_auxiliary_branches`？
+- [ ] 是否包含 `expected_resources`？
+- [ ] 是否包含 `required_missing_inputs`？
+- [ ] 是否包含 `risk_level`？
+- [ ] 是否包含 `expected_prompt_features`？
+- [ ] 是否包含 `forbidden_prompt_features`？
+- [ ] 是否包含 `acceptance_criteria`？
+- [ ] 是否包含 `related_lessons`？
+- [ ] 是否能判断生成 prompt 是否合格？
+- [ ] 是否不是普通示例或下游任务 benchmark？

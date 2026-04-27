@@ -1,0 +1,56 @@
+lessons:
+  - id: lesson.routing.ambiguous-bugfix-request.001
+    type: routing-failure
+    related_resources:
+      - "@branch://software-engineering/bugfix-debugging"
+      - "@branch://software-engineering/coding-feature-development"
+      - "@template://coding-agent/bugfix"
+      - "@checklist://natural-language-entry"
+      - "@eval://software-engineering/bugfix-debugging/missing-inputs"
+    trigger: "用户说“帮我写 prompt 让 Codex 修复 build 报错”，但未提供日志或复现步骤。"
+    failure_mode: "系统把请求路由为通用代码生成，直接要求 agent 猜测并修改项目。"
+    root_cause: "路由没有按最终交付物识别为 bugfix，也没有把错误日志和复现步骤标记为阻塞或待补充。"
+    fix: "主分支应选 bugfix-debugging；目标工具为 Codex 时加入 adapter；没有日志时 prompt 必须先要求读取或补充日志，禁止猜测修复。"
+    update_targets:
+      - router.md
+      - prompt-generation-protocol.md
+      - branches/software-engineering/bugfix-debugging.md
+      - checklists.md
+    severity: medium
+    status: open
+
+  - id: lesson.routing.rag-citation-missed.001
+    type: routing-failure
+    related_resources:
+      - "@branch://ai-systems/knowledge-base-rag"
+      - "@checklist://rag"
+      - "@eval://ai-systems/knowledge-base-rag/citation-required"
+      - "@lesson://unsafe-patterns/rag-unsourced-answer"
+    trigger: "用户说“做知识库问答，回答要有引用”，但没有使用 RAG 分支。"
+    failure_mode: "生成的 prompt 只要求总结文档，没有 chunk、metadata、retrieval、citation 和无依据拒答规则。"
+    root_cause: "路由只按“文档”关键词选择 documentation-analysis，忽略最终交付物是知识库问答系统。"
+    fix: "主分支改为 knowledge-base-rag；必须绑定 citation、retrieval、permission、hallucination-control 检查项。"
+    update_targets:
+      - router.md
+      - metadata/resources.yaml
+      - evals/cases/ai-systems/knowledge-base-rag/citation-required.yaml
+    severity: high
+    status: open
+
+  - id: lesson.routing.medical-safety-missed.001
+    type: routing-failure
+    related_resources:
+      - "@branch://domain-specific/medical-health-info"
+      - "@safety://medical-boundary"
+      - "@checklist://safety-selection"
+      - "@eval://domain-specific/medical-health-info/diagnosis-boundary"
+    trigger: "用户描述症状并要求 AI 判断是什么病。"
+    failure_mode: "系统按普通信息整理生成 prompt，未触发医疗安全边界。"
+    root_cause: "router 缺少对诊断、处方、停药、急症红旗信号等医疗高风险意图的优先识别。"
+    fix: "风险等级设为 high，主分支选择 medical-health-info，绑定 medical-boundary，只允许症状时间线、红旗信号、就医准备和医生问题清单。"
+    update_targets:
+      - router.md
+      - safety/medical-boundary.md
+      - checklists.md
+    severity: high
+    status: open

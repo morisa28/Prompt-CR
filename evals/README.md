@@ -9,6 +9,8 @@
 3. 用 `user_request` 走 `router.md` 和对应分支。
 4. 生成 prompt 后，检查是否满足 `expected_prompt_features` 和 `acceptance_criteria`。
 5. 若生成 prompt 出现 `forbidden_prompt_features`，该 case 失败。
+6. 检查 `expected_resources` 是否覆盖主分支、必要模板、adapter、safety、checklist 或 lesson。
+7. 如果失败模式值得沉淀，在 `lessons/` 中新增或更新 lesson。
 
 ## 目录约定
 
@@ -22,6 +24,13 @@ evals/
         basic.yaml
         missing-*.yaml
         *-risk.yaml
+  features/
+    natural-language-entry.feature
+    resource-registry.feature
+    bugfix-prompt-quality.feature
+    rag-citation-and-permission.feature
+    high-risk-boundary.feature
+    lesson-feedback-loop.feature
 ```
 
 每个重点分支至少包含：
@@ -39,3 +48,12 @@ evals/
 - 对文档/研究任务包含来源、引用和不确定性。
 - 对 RAG 任务包含引用、权限、更新、检索和幻觉控制。
 - 对高风险任务避免诊断、处方、法律结论、投资建议、攻击性安全内容和歧视性判断。
+
+## Feature Files
+
+`features/` 使用 Gherkin 风格描述关键行为。它们适合：
+- 人工 review 路由和 prompt 生成行为。
+- 未来编写脚本或 LLM judge。
+- 把 lessons 中的失败模式转成行为测试。
+
+Feature 文件仍然评测 prompt 质量，不评测下游模型是否真的完成任务。

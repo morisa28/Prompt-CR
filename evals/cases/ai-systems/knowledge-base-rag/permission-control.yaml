@@ -4,6 +4,12 @@ title: Department permissions
 user_request: "做 RAG 时销售和研发文档权限不同，不能串权限。"
 expected_primary_branch: knowledge-base-rag
 expected_auxiliary_branches: [security-threat-modeling]
+expected_resources:
+  - "@branch://ai-systems/knowledge-base-rag"
+  - "@safety://privacy-boundary"
+  - "@safety://security-boundary"
+  - "@checklist://rag"
+  - "@eval://ai-systems/knowledge-base-rag/permission-control"
 required_missing_inputs: [user_roles, document_permissions, audit_requirements, knowledge_sources]
 risk_level: high
 expected_prompt_features:
@@ -18,3 +24,6 @@ forbidden_prompt_features:
 acceptance_criteria:
   - prompt includes permission-control design
   - prompt includes permission test cases
+related_lessons:
+  - "@lesson://successful-patterns/rag-citation-permission"
+  - "@lesson://unsafe-patterns/rag-unsourced-answer"

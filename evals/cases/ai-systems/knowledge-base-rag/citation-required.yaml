@@ -1,0 +1,35 @@
+id: ai.rag.citation_required
+branch: ai-systems/knowledge-base-rag
+title: Knowledge base answers must cite sources
+category: ai-systems
+user_request: "我想设计一个 RAG 知识库问答 prompt，回答必须引用来源，没有检索证据就不要回答。"
+expected_primary_branch: knowledge-base-rag
+expected_auxiliary_branches:
+  - documentation-analysis
+expected_resources:
+  - "@branch://ai-systems/knowledge-base-rag"
+  - "@template://ai-systems/rag-design"
+  - "@checklist://rag"
+  - "@eval://ai-systems/knowledge-base-rag/citation-required"
+required_missing_inputs:
+  - knowledge_sources
+  - citation_format
+  - evaluation_questions
+risk_level: high
+expected_prompt_features:
+  - requires source citations for every substantive answer
+  - forbids answering without retrieved evidence
+  - includes chunking, metadata, retrieval, rerank, and citation format
+  - distinguishes answer scope and non-answer scope
+forbidden_prompt_features:
+  - allows unsourced answers
+  - treats general model knowledge as knowledge-base evidence
+  - omits citation format
+acceptance_criteria:
+  - generated prompt makes citation mandatory
+  - generated prompt defines no-evidence refusal or clarification behavior
+  - generated prompt is actionable for RAG prompt design
+related_lessons:
+  - "@lesson://routing/rag-citation-missed"
+  - "@lesson://unsafe-patterns/rag-unsourced-answer"
+notes: "This eval checks prompt quality for RAG citation behavior, not answer factual correctness."

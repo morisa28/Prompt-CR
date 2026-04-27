@@ -4,6 +4,12 @@ title: Fix failing build with logs
 user_request: "帮我让 Codex 修复 npm run build 报错，日志里有 Cannot find module './config'，修完要跑测试，不要乱改。"
 expected_primary_branch: bugfix-debugging
 expected_auxiliary_branches: [test-generation, cli-agent]
+expected_resources:
+  - "@branch://software-engineering/bugfix-debugging"
+  - "@template://coding-agent/bugfix"
+  - "@adapter://codex"
+  - "@checklist://coding-agent/final-review"
+  - "@eval://software-engineering/bugfix-debugging/basic"
 required_missing_inputs: [working_directory, environment, package manager version if absent]
 risk_level: medium
 expected_prompt_features:
@@ -20,3 +26,5 @@ acceptance_criteria:
   - prompt is actionable by a coding agent
   - prompt includes minimal-change guidance
   - prompt includes verification commands
+related_lessons:
+  - "@lesson://prompt-failures/bugfix-missing-verification"

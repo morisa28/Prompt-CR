@@ -41,8 +41,12 @@ ROOT_FILES = [
     "prompt-generation-protocol.md",
     "branch-composition.md",
     "branches/manifest.yaml",
+    "metadata/resources.yaml",
     "evals/README.md",
     "evals/schema.md",
+    "lessons/README.md",
+    "adapters/README.md",
+    "safety/README.md",
 ]
 
 REQUIRED_EVAL_FIELDS = [
@@ -57,6 +61,24 @@ REQUIRED_EVAL_FIELDS = [
     "expected_prompt_features:",
     "forbidden_prompt_features:",
     "acceptance_criteria:",
+]
+
+RECOMMENDED_EVAL_FIELDS = [
+    "expected_resources:",
+    "related_lessons:",
+]
+
+REQUIRED_LESSON_FIELDS = [
+    "id:",
+    "type:",
+    "related_resources:",
+    "trigger:",
+    "failure_mode:",
+    "root_cause:",
+    "fix:",
+    "update_targets:",
+    "severity:",
+    "status:",
 ]
 
 FORBIDDEN_VAGUE_PHRASES = [
@@ -174,6 +196,34 @@ def eval_case_files(root: Path) -> list[Path]:
     return sorted(cases.rglob("*.yaml"))
 
 
+def eval_feature_files(root: Path) -> list[Path]:
+    features = root / "evals" / "features"
+    if not features.is_dir():
+        return []
+    return sorted(features.rglob("*.feature"))
+
+
+def lesson_files(root: Path) -> list[Path]:
+    lessons = root / "lessons"
+    if not lessons.is_dir():
+        return []
+    return sorted(path for path in lessons.rglob("*.yaml"))
+
+
+def adapter_files(root: Path) -> list[Path]:
+    adapters = root / "adapters"
+    if not adapters.is_dir():
+        return []
+    return sorted(path for path in adapters.rglob("*.md"))
+
+
+def safety_files(root: Path) -> list[Path]:
+    safety = root / "safety"
+    if not safety.is_dir():
+        return []
+    return sorted(path for path in safety.rglob("*.md"))
+
+
 def count_markdown_sections(path: Path, prefix: str) -> int:
     return sum(1 for line in read_text(path).splitlines() if line.startswith(prefix))
 
@@ -195,7 +245,12 @@ def collect_stats(root: Path) -> dict[str, Any]:
         "example_count": count_markdown_sections(root / "examples.md", "## Example"),
         "router_example_count": count_markdown_sections(root / "router.md", "### Example"),
         "eval_case_count": len(eval_case_files(root)),
+        "eval_feature_count": len(eval_feature_files(root)),
+        "lesson_file_count": len(lesson_files(root)),
+        "adapter_file_count": len(adapter_files(root)),
+        "safety_file_count": len(safety_files(root)),
         "manifest_exists": (root / "branches" / "manifest.yaml").is_file(),
+        "resource_registry_exists": (root / "metadata" / "resources.yaml").is_file(),
     }
 
 
@@ -214,7 +269,12 @@ def print_stats(root: Path, as_json: bool) -> None:
     print(f"- Examples: {stats['example_count']}")
     print(f"- Router examples: {stats['router_example_count']}")
     print(f"- Eval cases: {stats['eval_case_count']}")
+    print(f"- Eval features: {stats['eval_feature_count']}")
+    print(f"- Lesson files: {stats['lesson_file_count']}")
+    print(f"- Adapter files: {stats['adapter_file_count']}")
+    print(f"- Safety files: {stats['safety_file_count']}")
     print(f"- Manifest: {'yes' if stats['manifest_exists'] else 'no'}")
+    print(f"- Resource registry: {'yes' if stats['resource_registry_exists'] else 'no'}")
     print("\n## Categories")
     for category, count in stats["categories"].items():
         print(f"- `{category}`: {count}")
@@ -263,6 +323,18 @@ def validate(root: Path) -> ValidationResult:
     else:
         errors.append("Missing branches/manifest.yaml")
 
+    registry_path = root / "metadata" / "resources.yaml"
+    if registry_path.exists():
+        registry = read_text(registry_path)
+        for rel_path in re.findall(r"path:\s*\"?([^\"\s]+)\"?", registry):
+            if not (root / rel_path).is_file():
+                errors.append(f"Resource registry references missing path: {rel_path}")
+        for required_type in ["branch", "template", "checklist", "example", "eval", "adapter", "safety", "lesson"]:
+            if f"- {required_type}" not in registry and f"{required_type}s:" not in registry:
+                warnings.append(f"Resource registry may be missing resource type: {required_type}")
+    else:
+        errors.append("Missing metadata/resources.yaml")
+
     evals = eval_case_files(root)
     if not evals:
         errors.append("Missing eval case files under evals/cases/")
@@ -272,6 +344,32 @@ def validate(root: Path) -> ValidationResult:
         missing_fields = [field for field in REQUIRED_EVAL_FIELDS if field not in text]
         if missing_fields:
             errors.append(f"{rel} missing eval fields: {', '.join(missing_fields)}")
+        # Older eval cases remain valid without the round-2 registry fields.
+        # New or touched cases should include these fields per evals/schema.md.
+
+    features = eval_feature_files(root)
+    if not features:
+        errors.append("Missing eval feature files under evals/features/")
+    for path in features:
+        rel = path.relative_to(root).as_posix()
+        text = read_text(path)
+        if "Feature:" not in text or "Scenario:" not in text:
+            errors.append(f"{rel} must contain Feature and Scenario blocks")
+
+    lessons = lesson_files(root)
+    if not lessons:
+        errors.append("Missing lesson files under lessons/")
+    for path in lessons:
+        rel = path.relative_to(root).as_posix()
+        text = read_text(path)
+        missing_fields = [field for field in REQUIRED_LESSON_FIELDS if field not in text]
+        if missing_fields:
+            errors.append(f"{rel} missing lesson fields: {', '.join(missing_fields)}")
+
+    if len(adapter_files(root)) < 6:
+        errors.append("Expected adapters/README.md plus major target tool adapters")
+    if len(safety_files(root)) < 6:
+        errors.append("Expected safety/README.md plus major high-risk boundary files")
 
     for path in [root / rel for rel in ROOT_FILES if (root / rel).exists()] + branch_files(root):
         text = read_text(path)
@@ -309,7 +407,12 @@ def capabilities(root: Path) -> None:
     print(f"- Checklist count: {stats['checklist_count']}")
     print(f"- Example count: {stats['example_count']}")
     print(f"- Eval case count: {stats['eval_case_count']}")
+    print(f"- Eval feature count: {stats['eval_feature_count']}")
+    print(f"- Lesson file count: {stats['lesson_file_count']}")
+    print(f"- Adapter file count: {stats['adapter_file_count']}")
+    print(f"- Safety file count: {stats['safety_file_count']}")
     print(f"- Branch manifest: {'available' if stats['manifest_exists'] else 'missing'}")
+    print(f"- Resource registry: {'available' if stats['resource_registry_exists'] else 'missing'}")
     print("\n## Supported Categories")
     for category, count in stats["categories"].items():
         print(f"- `{category}`: {count} branches")

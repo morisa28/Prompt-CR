@@ -4,6 +4,12 @@ title: Missing error log
 user_request: "Codex 帮我修一下项目报错。"
 expected_primary_branch: bugfix-debugging
 expected_auxiliary_branches: [cli-agent]
+expected_resources:
+  - "@branch://software-engineering/bugfix-debugging"
+  - "@template://coding-agent/bugfix"
+  - "@adapter://codex"
+  - "@checklist://information-missing"
+  - "@eval://software-engineering/bugfix-debugging/missing-inputs"
 required_missing_inputs: [working_directory, error_log, reproduction_steps, expected_behavior, actual_behavior, environment]
 risk_level: medium
 expected_prompt_features:
@@ -18,3 +24,5 @@ forbidden_prompt_features:
 acceptance_criteria:
   - generated prompt classifies missing inputs
   - generated prompt prevents speculative edits
+related_lessons:
+  - "@lesson://routing/ambiguous-bugfix-request"

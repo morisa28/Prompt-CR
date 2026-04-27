@@ -49,9 +49,13 @@ python3 scripts/skill_hub_manager.py add-branch --spec /tmp/new-branch-spec.json
 - Branch files are referenced by `SKILL.md` and `router.md`.
 - Branch templates include placeholders.
 - Branches include checklist items.
-- `prompt-generation-protocol.md`, `branch-composition.md`, `branches/manifest.yaml`, `evals/README.md`, and `evals/schema.md` exist.
+- `prompt-generation-protocol.md`, `branch-composition.md`, `branches/manifest.yaml`, `metadata/resources.yaml`, `evals/README.md`, `evals/schema.md`, `lessons/README.md`, `adapters/README.md`, and `safety/README.md` exist.
 - `branches/manifest.yaml` references existing branch files and eval case files.
+- `metadata/resources.yaml` references existing paths.
 - Every YAML file under `evals/cases/` contains the required prompt-quality eval fields.
+- Feature files under `evals/features/` contain `Feature:` and `Scenario:` blocks.
+- Lesson YAML files contain trigger, failure mode, root cause, fix, update targets, severity, and status.
+- Adapter and safety directories include the expected major resource files.
 - Known vague phrases are reported as warnings.
 
-`stats` also reports eval case count and whether a branch manifest exists.
+`stats` also reports eval case count, feature count, lesson file count, adapter file count, safety file count, branch manifest status, and resource registry status.

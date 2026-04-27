@@ -720,3 +720,257 @@
 ```
 
 为什么这样写：它先固定核心玩法循环和原型边界，避免只写世界观或机制过载。
+
+## Natural Language Example 39. Bugfix With Registry And Eval
+
+用户原始输入：
+
+```text
+帮我写一个 prompt，让 Codex 修复 npm run build 报错，但不要乱改项目。
+```
+
+需求归一化：
+- 最终交付物：可交给 Codex 执行的 bugfix prompt。
+- 任务目标：定位 `npm run build` 失败根因，做最小修复并验证。
+- 已知事实：用户要求 Codex、build 报错、不要乱改。
+- 缺失输入：工作目录、错误日志、复现步骤、环境信息、测试命令。
+
+路由结果：
+- 主分支：`branches/software-engineering/bugfix-debugging.md`
+- 辅助分支：`branches/software-engineering/test-generation.md`, `branches/software-engineering/cli-agent.md`
+- 风险等级：Medium
+
+使用资源：
+- `@branch://software-engineering/bugfix-debugging`
+- `@template://coding-agent/bugfix`
+- `@adapter://codex`
+- `@checklist://coding-agent/final-review`
+- `@eval://software-engineering/bugfix-debugging/missing-inputs`
+- `@lesson://routing/ambiguous-bugfix-request`
+
+最终 prompt：
+
+```text
+你是 Codex，请在 `[待补充: working_directory]` 修复 `npm run build` 报错。
+
+已知信息：
+- 用户要求不要乱改项目。
+- 错误日志：`[待补充: error_log]`
+- 复现步骤：`npm run build`，其他步骤 `[待补充]`
+
+执行要求：
+1. 先读取 `package.json`、构建配置、错误日志指向文件和相关测试。
+2. 如果错误日志缺失，先要求获取或运行命令收集日志；不要猜测修复。
+3. 复现失败或说明无法复现原因，再定位根因。
+4. 只做最小修复；禁止无关重构、全仓库格式化、新增依赖、删除测试、降低断言或注释掉失败逻辑。
+5. 修复后运行 `npm run build` 和 `[待补充: test_command]`。
+
+输出：
+- 根因：
+- 证据：
+- 修改文件：
+- 关键改动：
+- 验证命令与结果：
+- 未验证项：
+- 剩余风险：
+```
+
+自检结果：
+- [x] 主分支由最终交付物决定。
+- [x] adapter 已选择 Codex。
+- [x] 缺失日志和复现步骤已处理。
+- [x] forbidden features 未出现：删除测试、忽略日志、无关重构。
+
+匹配 eval：`@eval://software-engineering/bugfix-debugging/missing-inputs`
+
+是否需要记录 lesson：不需要，已命中 `@lesson://routing/ambiguous-bugfix-request`。
+
+## Natural Language Example 40. RAG With Citation And Permission
+
+用户原始输入：
+
+```text
+我想设计一个 RAG 知识库 prompt，要求带引用和权限控制。
+```
+
+需求归一化：
+- 最终交付物：RAG prompt 设计任务。
+- 任务目标：设计知识源、chunking、metadata、retrieval、citation、permission 和 eval。
+- 缺失输入：知识源、文档类型、目标用户、权限规则、更新频率、评估问题。
+
+路由结果：
+- 主分支：`branches/ai-systems/knowledge-base-rag.md`
+- 辅助分支：`branches/software-engineering/security-threat-modeling.md`, `branches/documents-research/documentation-analysis.md`
+- 风险等级：High
+
+使用资源：
+- `@branch://ai-systems/knowledge-base-rag`
+- `@template://ai-systems/rag-design`
+- `@checklist://rag`
+- `@safety://privacy-boundary`
+- `@safety://security-boundary`
+- `@eval://ai-systems/knowledge-base-rag/citation-required`
+- `@eval://ai-systems/knowledge-base-rag/permission-control`
+
+最终 prompt：
+
+```text
+请设计一个 RAG 知识库 prompt。知识源：`[待补充: knowledge_sources]`；目标用户：`[待补充: target_users]`；权限规则：`[待补充: access_control]`。
+
+必须设计文档索引字段：来源、标题、路径、版本、更新时间、部门/角色权限、metadata、chunk id。必须说明 chunk size、overlap、结构化切分、embedding、向量库、metadata filter、top-k、hybrid retrieval、rerank 和上下文组装。
+
+回答必须带引用，引用格式至少包含文档标题、路径和段落或 chunk id。检索不到依据时必须拒答或澄清，不得编造。权限过滤必须发生在检索前、上下文组装前和生成后审计阶段。输出更新策略、失效文档处理、评估问题、命中率、引用准确率、拒答准确率和权限误放率。
+```
+
+自检结果：
+- [x] 引用和拒答规则明确。
+- [x] 权限作为高风险边界处理。
+- [x] 包含 eval 指标。
+
+匹配 eval：`@eval://ai-systems/knowledge-base-rag/citation-required`, `@eval://ai-systems/knowledge-base-rag/permission-control`
+
+是否需要记录 lesson：不需要，已有 `@lesson://routing/rag-citation-missed` 和 `@lesson://unsafe-patterns/rag-unsourced-answer`。
+
+## Natural Language Example 41. Medical Safety Boundary
+
+用户原始输入：
+
+```text
+帮我生成一个医疗信息整理 prompt，但不要让模型做诊断。
+```
+
+需求归一化：
+- 最终交付物：安全的医疗信息整理 prompt。
+- 任务目标：整理症状、时间线、红旗信号和就医问题。
+- 缺失输入：症状、时间线、严重程度、伴随症状、病史、用药。
+
+路由结果：
+- 主分支：`branches/domain-specific/medical-health-info.md`
+- 辅助分支：`branches/documents-research/report-writing.md`
+- 风险等级：High
+
+使用资源：
+- `@branch://domain-specific/medical-health-info`
+- `@template://high-risk/safe-boundary`
+- `@safety://medical-boundary`
+- `@checklist://high-risk-domain`
+- `@eval://domain-specific/medical-health-info/diagnosis-boundary`
+
+最终 prompt：
+
+```text
+请把以下健康信息整理为就医准备材料。你不能替代医生，不能诊断，不能处方，不能建议停药、换药或改变剂量。
+
+输入：
+- 症状：`[待补充: symptoms]`
+- 时间线：`[待补充: timeline]`
+- 严重程度和伴随症状：`[待补充]`
+- 既往史、用药、检查资料：`[待补充]`
+
+请先列出需要及时就医的红旗信号，再整理症状时间线、已知信息、待补充信息和建议询问医生的问题。不要输出疾病结论。
+```
+
+自检结果：
+- [x] medical safety 已注入。
+- [x] 不诊断、不处方、不停药换药。
+- [x] 输出可用于就医准备。
+
+匹配 eval：`@eval://domain-specific/medical-health-info/diagnosis-boundary`
+
+是否需要记录 lesson：如果生成 prompt 出现诊断或处方，应新增或更新 `@lesson://unsafe-patterns/medical-diagnosis-overreach`。
+
+## Natural Language Example 42. Data Analysis Missing Fields
+
+用户原始输入：
+
+```text
+把这个需求整理成数据分析任务 prompt：分析用户行为数据，找转化下降原因并输出图表报告。
+```
+
+需求归一化：
+- 最终交付物：数据分析 prompt。
+- 任务目标：用可复现步骤分析转化下降相关因素，并输出图表报告。
+- 缺失输入：数据源、字段含义、转化定义、时间范围、报告读者。
+
+路由结果：
+- 主分支：`branches/data-analytics/data-analysis.md`
+- 辅助分支：`branches/data-analytics/visualization-dashboard.md`, `branches/documents-research/report-writing.md`
+- 风险等级：Medium
+
+使用资源：
+- `@branch://data-analytics/data-analysis`
+- `@template://data-analysis/reproducible-report`
+- `@checklist://data-analysis`
+- `@eval://data-analytics/data-analysis/missing-data-dictionary`
+
+最终 prompt：
+
+```text
+请把 `[待补充: data_source]` 转成可复现的数据分析任务。目标是分析转化下降的相关因素并输出图表报告。
+
+执行要求：
+1. 先读取数据 schema、样例行、字段类型、时间范围和样本量。
+2. 建立数据字典；字段含义不明时标注 `[待补充]`，不得猜成事实。
+3. 定义转化率分子、分母、时间窗口和分组维度。
+4. 检查缺失、重复、异常、时间戳和用户 ID 一致性。
+5. 输出指标表、图表建议、结论、限制和下一步验证。
+6. 禁止把相关性写成因果。
+```
+
+自检结果：
+- [x] 数据字典和指标口径是前置步骤。
+- [x] 图表和报告作为辅助输出。
+- [x] 结论边界明确。
+
+匹配 eval：`@eval://data-analytics/data-analysis/missing-data-dictionary`
+
+是否需要记录 lesson：如果 prompt 跳过字段字典，应新增或更新 `@lesson://prompt-failures/data-analysis-missing-dictionary`。
+
+## Natural Language Example 43. Prompt System Improvement
+
+用户原始输入：
+
+```text
+帮我改进这个 prompt skill hub，让资源更好索引，也能沉淀失败经验。
+```
+
+需求归一化：
+- 最终交付物：Prompt 系统改进 prompt。
+- 任务目标：审计并设计 registry、eval、lessons、adapter 和 safety 资源。
+- 缺失输入：项目路径、允许改动、现有结构、同步要求。
+
+路由结果：
+- 主分支：`branches/meta/meta-skill-builder.md`
+- 辅助分支：`branches/general-prompt/prompt-review.md`, `branches/general-prompt/prompt-template-builder.md`
+- 风险等级：Medium
+
+使用资源：
+- `@branch://meta/prompt-system-improvement`
+- `@checklist://prompt-system-improvement`
+- `@checklist://resource-registry`
+- `@eval://meta/resource-registry/basic`
+- `@lesson://improvement-notes/router-resource-references`
+- `@lesson://improvement-notes/registry-bind-evals-lessons`
+
+最终 prompt：
+
+```text
+请审计并改进 `[待补充: project_path]` 的 Prompt Engineering Skill Hub。先只读审计 README、SKILL、router、protocol、templates、checklists、examples、branches、evals 和 scripts。
+
+改进目标：
+1. 让自然语言请求能完成归一化、路由、资源选择、缺失输入识别、风险检查、prompt 生成和自检。
+2. 设计轻量 registry，索引 branch、template、checklist、example、eval、adapter、safety 和 lesson。
+3. 设计 lessons 机制，记录失败模式、根因、修复建议和 update targets。
+4. 增强 eval schema 和 feature 行为测试，只评测生成 prompt 的质量。
+
+约束：不要引入角色化能力，不要实现 MCP Server、Web UI 或复杂 CLI，不要把项目改成角色平台。完成后运行可用验证并输出改动文件、自检和后续建议。
+```
+
+自检结果：
+- [x] 先审计再修改。
+- [x] registry/eval/lesson 是轻量机制。
+- [x] 避免角色化能力和平台化跑偏。
+
+匹配 eval：`@eval://meta/resource-registry/basic`
+
+是否需要记录 lesson：如果发现新失败模式，应在 `lessons/improvement-notes.yaml` 或对应失败文件中新增记录。

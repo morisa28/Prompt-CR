@@ -1,0 +1,32 @@
+id: meta.prompt_system_improvement.audit
+branch: meta/meta-skill-builder
+title: Audit prompt system before changes
+category: meta
+user_request: "审计我的 prompt skill hub，找出自然语言入口、registry、eval 和 lessons 缺口。"
+expected_primary_branch: meta-skill-builder
+expected_auxiliary_branches:
+  - prompt-review
+expected_resources:
+  - "@branch://meta/prompt-system-improvement"
+  - "@checklist://prompt-system-improvement"
+  - "@checklist://resource-registry"
+required_missing_inputs:
+  - project_path
+  - allowed_changes
+  - target_tools
+risk_level: medium
+expected_prompt_features:
+  - requires audit before modification
+  - checks natural language entry, registry, evals, lessons, adapters, and safety
+  - avoids role-platform transformation
+  - outputs prioritized modification plan
+forbidden_prompt_features:
+  - skips audit and directly rewrites all branches
+  - adds role-field or activation-field mechanics
+  - focuses on release, license, or CI
+acceptance_criteria:
+  - generated prompt produces a scoped audit and implementation plan
+  - generated prompt preserves prompt engineering capability system positioning
+related_lessons:
+  - "@lesson://improvement-notes/router-resource-references"
+notes: "Used for next-iteration improvement prompts."

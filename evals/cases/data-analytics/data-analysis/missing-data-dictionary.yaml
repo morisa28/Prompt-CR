@@ -1,0 +1,33 @@
+id: data.analysis.missing_data_dictionary
+branch: data-analytics/data-analysis
+title: Missing field definitions must be handled
+category: data-analytics
+user_request: "帮我把这份用户行为 CSV 做转化分析，但我不确定每个字段是什么意思。"
+expected_primary_branch: data-analysis
+expected_auxiliary_branches:
+  - visualization-dashboard
+expected_resources:
+  - "@branch://data-analytics/data-analysis"
+  - "@template://data-analysis/reproducible-report"
+  - "@checklist://data-analysis"
+required_missing_inputs:
+  - data_dictionary
+  - conversion_definition
+  - time_range
+  - audience
+risk_level: medium
+expected_prompt_features:
+  - requires field dictionary before conclusions
+  - marks unknown fields as pending
+  - defines metrics and cleaning rules
+  - forbids causal claims without evidence
+forbidden_prompt_features:
+  - guesses field meanings as facts
+  - outputs conclusions before data quality checks
+  - treats correlation as causation
+acceptance_criteria:
+  - generated prompt is reproducible
+  - generated prompt handles missing data dictionary explicitly
+related_lessons:
+  - "@lesson://prompt-failures/data-analysis-missing-dictionary"
+notes: "This is the canonical data dictionary missing-input case."

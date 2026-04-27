@@ -1,0 +1,35 @@
+id: meta.resource_registry.basic
+branch: meta/resource-registry
+title: Resource registry design without overengineering
+category: meta
+user_request: "帮我改进这个 prompt skill hub 的资源组织，让分支、模板、检查表、示例、eval、adapter、safety 和 lesson 能统一索引。"
+expected_primary_branch: meta-skill-builder
+expected_auxiliary_branches:
+  - prompt-review
+  - prompt-template-builder
+expected_resources:
+  - "@branch://meta/prompt-system-improvement"
+  - "@checklist://resource-registry"
+  - "@eval://meta/resource-registry/basic"
+required_missing_inputs:
+  - project_path
+  - existing_structure
+  - allowed_changes
+risk_level: medium
+expected_prompt_features:
+  - requires a lightweight registry schema
+  - includes branch, template, checklist, example, eval, adapter, safety, and lesson resources
+  - defines stable URI rules
+  - connects registry to routing and eval matching
+  - avoids building a full platform or MCP server
+forbidden_prompt_features:
+  - designs a complex runtime platform
+  - introduces role activation system
+  - ignores existing markdown resources
+acceptance_criteria:
+  - generated prompt asks for a maintainable resource registry
+  - generated prompt preserves project direction as a capability system
+related_lessons:
+  - "@lesson://improvement-notes/registry-bind-evals-lessons"
+  - "@lesson://improvement-notes/router-resource-references"
+notes: "This case guards against overengineering and role-platform drift."

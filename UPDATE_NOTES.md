@@ -1,5 +1,36 @@
 # 更新说明
 
+## 2026-04-27 Capability System Iteration
+
+本次迭代目标：不继续堆叠分支，也不引入角色化能力，而是把项目升级为更清晰、更可索引、更可测试、更能沉淀经验的 Prompt Engineering Capability System。
+
+详细更新文档：`UPDATE_2026-04-27_CAPABILITY_SYSTEM_ITERATION.md`
+
+## 本轮主要新增
+
+- `metadata/resources.yaml`：轻量资源注册表，统一索引 branch、template、checklist、example、eval、adapter、safety 和 lesson。
+- `lessons/`：Prompt 经验记忆库，记录 routing failures、prompt failures、unsafe patterns、successful patterns 和 improvement notes。
+- `adapters/`：Codex、Codex CLI、Claude Code、Gemini CLI、ChatGPT 的目标工具适配文档。
+- `safety/`：医疗、法律、金融、安全、隐私的 prompt 生成边界。
+- `evals/features/`：Gherkin 风格行为测试，覆盖自然语言入口、资源注册、bugfix prompt 质量、RAG 引用权限、高风险边界和 lesson 反馈闭环。
+- 新增重点 eval cases，使 eval case 总数从 36 增至 51。
+
+## 本轮主要增强
+
+- `prompt-generation-protocol.md`：加入 resource selection、optional eval matching 和 learn from failures。
+- `router.md`：标准路由输出增加资源引用、adapter、safety、suggested template、checklist、matched eval 和 related lessons。
+- `README.md` / `README_en.md`：加入自然语言入口、registry、eval features、lessons、adapters 和 safety 说明。
+- `SKILL.md`：要求 AI Agent 通过 protocol、registry、adapter、safety、eval 和 lessons 完成 prompt 生成。
+- `checklists.md`：新增自然语言入口、资源注册表、prompt 评测、lesson 记录、adapter 选择、safety 选择和 eval case 质量检查表。
+- `examples.md`：新增自然语言到最终 prompt 的完整流程示例，包含资源 URI、matched eval 和 lesson 判断。
+- `scripts/skill_hub_manager.py`：`validate` 和 `stats` 覆盖 registry、lessons、adapters、safety 和 feature evals。
+
+## 本轮边界
+
+- 未新增角色化专家、角色字段、激活字段或专家平台叙事。
+- 未实现 MCP Server、Web UI、桌面客户端或复杂 CLI。
+- 未处理 CI、Release、License 或社区治理。
+
 ## 2026-04-27 Skill Hub System Upgrade
 
 本次升级目标：把 `prompt-engineering` 从 Prompt 模板知识库 / Skill Hub 雏形升级为更完整、更可验证、更易扩展的 Prompt Engineering Skill Hub。

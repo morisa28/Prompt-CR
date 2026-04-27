@@ -1,0 +1,629 @@
+version: 1
+description: "Prompt Engineering Skill Hub resource registry for routing, composition, eval matching, adapter selection, safety selection, and lesson lookup."
+
+uri_rules:
+  format: "@<type>://<category>/<slug>"
+  examples:
+    - "@branch://software-engineering/bugfix-debugging"
+    - "@template://coding-agent/bugfix"
+    - "@checklist://natural-language-entry"
+    - "@eval://software-engineering/bugfix-debugging/basic"
+    - "@adapter://codex-cli"
+    - "@safety://medical-boundary"
+    - "@lesson://routing/ambiguous-bugfix-request"
+
+resource_types:
+  - branch
+  - template
+  - checklist
+  - example
+  - eval
+  - adapter
+  - safety
+  - lesson
+
+selection_policy:
+  natural_language_entry:
+    - Normalize the user request into final deliverable, target tool, known inputs, missing inputs, and risk signals.
+    - Select one primary branch by final deliverable.
+    - Add auxiliary branches only for tool adaptation, validation, report format, citation, permissions, multimodal input, or safety boundaries.
+    - Select adapter resources when a target tool is named.
+    - Select safety resources for medical, legal, financial, security, recruiting, privacy, production, or child-related risk.
+    - Match eval resources before finalizing when a similar eval case exists.
+    - Look up lesson resources for known failure modes and apply their fixes.
+
+resources:
+  branches:
+    - id: branch:software-engineering.bugfix-debugging
+      uri: "@branch://software-engineering/bugfix-debugging"
+      path: branches/software-engineering/bugfix-debugging.md
+      category: software-engineering
+      purpose: "Generate prompts for diagnosing and fixing software failures with root-cause analysis, minimal safe changes, and verification."
+      primary_triggers:
+        - build failure
+        - runtime error
+        - failing test
+        - CLI error
+        - error log
+      negative_triggers:
+        - new feature from scratch
+        - broad rewrite
+        - read-only repository analysis
+      required_inputs:
+        blocking:
+          - error log or failure message
+          - reproduction steps or failing command
+          - working directory or repository context
+        optional:
+          - environment
+          - expected behavior
+          - actual behavior
+          - recent changes
+      linked_templates:
+        - "@template://coding-agent/bugfix"
+      linked_checklists:
+        - "@checklist://coding-agent/final-review"
+        - "@checklist://information-missing"
+        - "@checklist://prompt-eval-quality"
+      linked_examples:
+        - "@example://natural-language/bugfix-codex-build"
+      linked_evals:
+        - "@eval://software-engineering/bugfix-debugging/basic"
+        - "@eval://software-engineering/bugfix-debugging/missing-inputs"
+        - "@eval://software-engineering/bugfix-debugging/unsafe-shortcut"
+      linked_lessons:
+        - "@lesson://routing/ambiguous-bugfix-request"
+        - "@lesson://prompt-failures/bugfix-missing-verification"
+        - "@lesson://unsafe-patterns/delete-tests-to-pass"
+      compatible_adapters:
+        - "@adapter://codex"
+        - "@adapter://codex-cli"
+        - "@adapter://claude-code"
+        - "@adapter://gemini-cli"
+      risk_level_default: medium
+
+    - id: branch:software-engineering.repository-analysis
+      uri: "@branch://software-engineering/repository-analysis"
+      path: branches/software-engineering/repository-analysis.md
+      category: software-engineering
+      purpose: "Generate read-only repository analysis prompts with evidence, architecture summary, risks, and improvement recommendations."
+      primary_triggers:
+        - analyze repository
+        - understand codebase
+        - project structure
+        - improvement report
+      negative_triggers:
+        - fix bug
+        - implement feature
+        - edit files
+      required_inputs:
+        blocking:
+          - repository path or URL
+          - analysis goal
+        optional:
+          - focus areas
+          - excluded paths
+          - report audience
+      linked_templates:
+        - "@template://repository-analysis/read-only"
+      linked_checklists:
+        - "@checklist://repository-analysis"
+        - "@checklist://output-format"
+      linked_examples:
+        - "@example://natural-language/repository-analysis-report"
+      linked_evals:
+        - "@eval://software-engineering/repository-analysis/basic"
+        - "@eval://software-engineering/repository-analysis/improvement-report"
+        - "@eval://software-engineering/repository-analysis/accidental-modification-risk"
+      linked_lessons:
+        - "@lesson://successful-patterns/repository-analysis-read-only"
+      compatible_adapters:
+        - "@adapter://codex"
+        - "@adapter://codex-cli"
+        - "@adapter://claude-code"
+      risk_level_default: medium
+
+    - id: branch:ai-systems.knowledge-base-rag
+      uri: "@branch://ai-systems/knowledge-base-rag"
+      path: branches/ai-systems/knowledge-base-rag.md
+      category: ai-systems
+      purpose: "Generate RAG prompts with knowledge sources, chunking, metadata, retrieval, citations, permissions, updates, hallucination control, and evals."
+      primary_triggers:
+        - RAG
+        - knowledge base
+        - vector database
+        - citations
+        - permission control
+      negative_triggers:
+        - single document summary
+        - no knowledge source
+        - generic chatbot without retrieval
+      required_inputs:
+        blocking:
+          - knowledge sources
+          - target users
+          - answer scope
+          - citation requirement
+          - access control
+        optional:
+          - chunking strategy
+          - metadata schema
+          - embedding model
+          - vector store
+          - evaluation questions
+      linked_templates:
+        - "@template://ai-systems/rag-design"
+      linked_checklists:
+        - "@checklist://rag"
+        - "@checklist://hallucination-risk"
+        - "@checklist://safety-selection"
+      linked_examples:
+        - "@example://natural-language/rag-citation-permission"
+      linked_evals:
+        - "@eval://ai-systems/knowledge-base-rag/basic"
+        - "@eval://ai-systems/knowledge-base-rag/citation-required"
+        - "@eval://ai-systems/knowledge-base-rag/permission-control"
+      linked_lessons:
+        - "@lesson://routing/rag-citation-missed"
+        - "@lesson://unsafe-patterns/rag-unsourced-answer"
+        - "@lesson://successful-patterns/rag-citation-permission"
+      compatible_adapters:
+        - "@adapter://chatgpt"
+        - "@adapter://codex"
+        - "@adapter://codex-cli"
+      safety_resources:
+        - "@safety://privacy-boundary"
+        - "@safety://security-boundary"
+      risk_level_default: high
+
+    - id: branch:product-design-business.product-requirements
+      uri: "@branch://product-design-business/product-requirements"
+      path: branches/product-design-business/product-requirements.md
+      category: product-design-business
+      purpose: "Generate PRD prompts, user stories, acceptance criteria, metrics, and dev-agent handoff prompts."
+      primary_triggers:
+        - PRD
+        - product requirements
+        - MVP
+        - user stories
+        - acceptance criteria
+      negative_triggers:
+        - pure implementation
+        - marketing copy only
+      required_inputs:
+        blocking:
+          - product goal
+          - target users
+          - problem statement
+          - scope
+        optional:
+          - stakeholders
+          - success metrics
+          - non-goals
+          - technical context
+      linked_templates:
+        - "@template://product/prd-to-dev-agent"
+      linked_checklists:
+        - "@checklist://product-requirements"
+        - "@checklist://output-format"
+      linked_evals:
+        - "@eval://product-design-business/product-requirements/basic"
+        - "@eval://product-design-business/product-requirements/dev-agent-output"
+        - "@eval://product-design-business/product-requirements/ambiguous-stakeholders"
+      linked_lessons:
+        - "@lesson://prompt-failures/prd-missing-acceptance"
+      compatible_adapters:
+        - "@adapter://chatgpt"
+        - "@adapter://codex"
+        - "@adapter://claude-code"
+      risk_level_default: medium
+
+    - id: branch:data-analytics.data-analysis
+      uri: "@branch://data-analytics/data-analysis"
+      path: branches/data-analytics/data-analysis.md
+      category: data-analytics
+      purpose: "Generate reproducible data analysis prompts with data dictionary, cleaning rules, metric definitions, visualization, and conclusion boundaries."
+      primary_triggers:
+        - data analysis
+        - metrics
+        - trend
+        - anomaly
+        - visualization report
+      negative_triggers:
+        - no data source
+        - final investment advice
+      required_inputs:
+        blocking:
+          - data source
+          - analysis question
+          - field definitions or data dictionary
+        optional:
+          - metric definitions
+          - time range
+          - visualization requirements
+          - audience
+      linked_templates:
+        - "@template://data-analysis/reproducible-report"
+      linked_checklists:
+        - "@checklist://data-analysis"
+        - "@checklist://information-missing"
+      linked_evals:
+        - "@eval://data-analytics/data-analysis/basic"
+        - "@eval://data-analytics/data-analysis/missing-data-dictionary"
+        - "@eval://data-analytics/data-analysis/visualization-report"
+      linked_lessons:
+        - "@lesson://prompt-failures/data-analysis-missing-dictionary"
+      compatible_adapters:
+        - "@adapter://chatgpt"
+        - "@adapter://codex"
+        - "@adapter://codex-cli"
+      risk_level_default: medium
+
+    - id: branch:domain-specific.medical-health-info
+      uri: "@branch://domain-specific/medical-health-info"
+      path: branches/domain-specific/medical-health-info.md
+      category: domain-specific
+      purpose: "Generate safe health information prompts for symptom organization, timelines, red flags, and clinician preparation without diagnosis or prescription."
+      primary_triggers:
+        - symptoms
+        - medical report
+        - doctor visit preparation
+        - health information
+      negative_triggers:
+        - final diagnosis
+        - prescription request
+        - stop or change medication
+      required_inputs:
+        blocking:
+          - symptom description
+          - timeline
+          - urgent red-flag indicators if present
+        optional:
+          - medications
+          - medical history
+          - test results
+          - doctor visit goal
+      linked_templates:
+        - "@template://high-risk/safe-boundary"
+      linked_checklists:
+        - "@checklist://high-risk-domain"
+        - "@checklist://safety-selection"
+      linked_evals:
+        - "@eval://domain-specific/medical-health-info/symptom-summary"
+        - "@eval://domain-specific/medical-health-info/diagnosis-boundary"
+        - "@eval://domain-specific/medical-health-info/emergency-red-flags"
+      linked_lessons:
+        - "@lesson://routing/medical-safety-missed"
+        - "@lesson://unsafe-patterns/medical-diagnosis-overreach"
+      safety_resources:
+        - "@safety://medical-boundary"
+      compatible_adapters:
+        - "@adapter://chatgpt"
+      risk_level_default: high
+
+    - id: branch:domain-specific.legal-policy-review
+      uri: "@branch://domain-specific/legal-policy-review"
+      path: branches/domain-specific/legal-policy-review.md
+      category: domain-specific
+      purpose: "Generate safe legal and policy review prompts for clause summaries, risk points, and lawyer consultation questions without final legal conclusions."
+      primary_triggers:
+        - contract
+        - legal document
+        - policy review
+        - compliance
+      negative_triggers:
+        - jurisdiction-free final legal conclusion
+        - no document text
+      required_inputs:
+        blocking:
+          - jurisdiction
+          - document text
+          - document type
+          - transaction context
+        optional:
+          - party role
+          - negotiation goals
+          - risk focus
+      linked_templates:
+        - "@template://high-risk/safe-boundary"
+      linked_checklists:
+        - "@checklist://high-risk-domain"
+        - "@checklist://safety-selection"
+      linked_evals:
+        - "@eval://domain-specific/legal-info/contract-summary"
+        - "@eval://domain-specific/legal-info/jurisdiction-missing"
+        - "@eval://domain-specific/legal-info/legal-advice-boundary"
+      linked_lessons:
+        - "@lesson://unsafe-patterns/legal-final-conclusion"
+      safety_resources:
+        - "@safety://legal-boundary"
+      compatible_adapters:
+        - "@adapter://chatgpt"
+      risk_level_default: high
+
+    - id: branch:domain-specific.finance-investment-analysis
+      uri: "@branch://domain-specific/finance-investment-analysis"
+      path: branches/domain-specific/finance-investment-analysis.md
+      category: domain-specific
+      purpose: "Generate informational financial analysis prompts with sources, assumptions, risks, and no personalized buy/sell advice."
+      primary_triggers:
+        - investment analysis
+        - stock report
+        - financial analysis
+        - budget planning
+      negative_triggers:
+        - guaranteed return
+        - direct buy or sell instruction
+      required_inputs:
+        blocking:
+          - asset or topic
+          - analysis goal
+          - current date
+          - data sources
+        optional:
+          - risk profile
+          - time horizon
+          - assumptions
+          - portfolio context
+      linked_templates:
+        - "@template://high-risk/safe-boundary"
+        - "@template://data-analysis/reproducible-report"
+      linked_checklists:
+        - "@checklist://high-risk-domain"
+        - "@checklist://data-analysis"
+      linked_evals:
+        - "@eval://domain-specific/financial-analysis/report-analysis"
+        - "@eval://domain-specific/financial-analysis/investment-advice-boundary"
+        - "@eval://domain-specific/financial-analysis/assumptions-and-risk"
+      linked_lessons:
+        - "@lesson://unsafe-patterns/financial-direct-trade"
+      safety_resources:
+        - "@safety://financial-boundary"
+      compatible_adapters:
+        - "@adapter://chatgpt"
+      risk_level_default: high
+
+    - id: branch:meta.meta-skill-builder
+      uri: "@branch://meta/prompt-system-improvement"
+      path: branches/meta/meta-skill-builder.md
+      category: meta
+      purpose: "Generate prompts for auditing and improving prompt systems, routers, registries, evals, lessons, templates, and branch structures."
+      primary_triggers:
+        - prompt system improvement
+        - skill hub audit
+        - registry design
+        - eval design
+      negative_triggers:
+        - single prompt rewrite only
+        - role platform design
+      required_inputs:
+        blocking:
+          - project path or source materials
+          - improvement goal
+          - allowed changes
+        optional:
+          - target tools
+          - existing structure
+          - eval requirements
+          - registry requirements
+      linked_templates:
+        - "@template://meta/prompt-system-improvement"
+      linked_checklists:
+        - "@checklist://prompt-system-improvement"
+        - "@checklist://resource-registry"
+        - "@checklist://lesson-quality"
+      linked_evals:
+        - "@eval://meta/prompt-system-improvement/audit"
+        - "@eval://meta/resource-registry/basic"
+        - "@eval://meta/natural-language-entry/basic"
+      linked_lessons:
+        - "@lesson://improvement-notes/router-resource-references"
+        - "@lesson://improvement-notes/registry-bind-evals-lessons"
+      compatible_adapters:
+        - "@adapter://codex"
+        - "@adapter://codex-cli"
+        - "@adapter://claude-code"
+      risk_level_default: medium
+
+  templates:
+    - id: template:coding-agent.bugfix
+      uri: "@template://coding-agent/bugfix"
+      path: templates.md
+      section: "Bugfix Template"
+      used_by:
+        - "@branch://software-engineering/bugfix-debugging"
+    - id: template:repository-analysis.read-only
+      uri: "@template://repository-analysis/read-only"
+      path: templates.md
+      section: "Repository Analysis Template"
+      used_by:
+        - "@branch://software-engineering/repository-analysis"
+    - id: template:ai-systems.rag-design
+      uri: "@template://ai-systems/rag-design"
+      path: templates.md
+      section: "RAG System Design Template"
+      used_by:
+        - "@branch://ai-systems/knowledge-base-rag"
+    - id: template:product.prd-to-dev-agent
+      uri: "@template://product/prd-to-dev-agent"
+      path: templates.md
+      section: "PRD Generation Template"
+      used_by:
+        - "@branch://product-design-business/product-requirements"
+    - id: template:data-analysis.reproducible-report
+      uri: "@template://data-analysis/reproducible-report"
+      path: templates.md
+      section: "Data Analysis Template"
+      used_by:
+        - "@branch://data-analytics/data-analysis"
+    - id: template:high-risk.safe-boundary
+      uri: "@template://high-risk/safe-boundary"
+      path: templates.md
+      section: "High-Risk Safety Template"
+      used_by:
+        - "@branch://domain-specific/medical-health-info"
+        - "@branch://domain-specific/legal-policy-review"
+        - "@branch://domain-specific/finance-investment-analysis"
+    - id: template:meta.prompt-system-improvement
+      uri: "@template://meta/prompt-system-improvement"
+      path: templates.md
+      section: "Prompt Improvement / Meta Prompt Template"
+      used_by:
+        - "@branch://meta/prompt-system-improvement"
+
+  checklists:
+    - id: checklist:natural-language-entry
+      uri: "@checklist://natural-language-entry"
+      path: checklists.md
+      section: "自然语言入口检查表"
+    - id: checklist:resource-registry
+      uri: "@checklist://resource-registry"
+      path: checklists.md
+      section: "资源注册表检查表"
+    - id: checklist:prompt-eval-quality
+      uri: "@checklist://prompt-eval-quality"
+      path: checklists.md
+      section: "Prompt 评测检查表"
+    - id: checklist:lesson-quality
+      uri: "@checklist://lesson-quality"
+      path: checklists.md
+      section: "Lesson 记录检查表"
+    - id: checklist:adapter-selection
+      uri: "@checklist://adapter-selection"
+      path: checklists.md
+      section: "Adapter 选择检查表"
+    - id: checklist:safety-selection
+      uri: "@checklist://safety-selection"
+      path: checklists.md
+      section: "Safety 选择检查表"
+    - id: checklist:eval-case-quality
+      uri: "@checklist://eval-case-quality"
+      path: checklists.md
+      section: "Eval Case 质量检查表"
+    - id: checklist:information-missing
+      uri: "@checklist://information-missing"
+      path: checklists.md
+      section: "信息缺失检查表"
+    - id: checklist:coding-agent.final-review
+      uri: "@checklist://coding-agent/final-review"
+      path: checklists.md
+      section: "Coding Agent Prompt 检查表"
+
+  examples:
+    - id: example:natural-language.bugfix-codex-build
+      uri: "@example://natural-language/bugfix-codex-build"
+      path: examples.md
+      section: "Natural Language Example. Bugfix"
+    - id: example:natural-language.rag-citation-permission
+      uri: "@example://natural-language/rag-citation-permission"
+      path: examples.md
+      section: "Natural Language Example. RAG"
+    - id: example:natural-language.medical-safe-summary
+      uri: "@example://natural-language/medical-safe-summary"
+      path: examples.md
+      section: "Natural Language Example. Medical Safety"
+    - id: example:natural-language.repository-analysis-report
+      uri: "@example://natural-language/repository-analysis-report"
+      path: examples.md
+      section: "Full Process Example 30"
+
+  adapters:
+    - id: adapter:codex
+      uri: "@adapter://codex"
+      path: adapters/codex.md
+    - id: adapter:codex-cli
+      uri: "@adapter://codex-cli"
+      path: adapters/codex-cli.md
+    - id: adapter:claude-code
+      uri: "@adapter://claude-code"
+      path: adapters/claude-code.md
+    - id: adapter:gemini-cli
+      uri: "@adapter://gemini-cli"
+      path: adapters/gemini-cli.md
+    - id: adapter:chatgpt
+      uri: "@adapter://chatgpt"
+      path: adapters/chatgpt.md
+
+  safety:
+    - id: safety:medical-boundary
+      uri: "@safety://medical-boundary"
+      path: safety/medical-boundary.md
+      applies_to:
+        - "@branch://domain-specific/medical-health-info"
+    - id: safety:legal-boundary
+      uri: "@safety://legal-boundary"
+      path: safety/legal-boundary.md
+      applies_to:
+        - "@branch://domain-specific/legal-policy-review"
+    - id: safety:financial-boundary
+      uri: "@safety://financial-boundary"
+      path: safety/financial-boundary.md
+      applies_to:
+        - "@branch://domain-specific/finance-investment-analysis"
+    - id: safety:security-boundary
+      uri: "@safety://security-boundary"
+      path: safety/security-boundary.md
+      applies_to:
+        - "@branch://software-engineering/security-threat-modeling"
+        - "@branch://ai-systems/knowledge-base-rag"
+    - id: safety:privacy-boundary
+      uri: "@safety://privacy-boundary"
+      path: safety/privacy-boundary.md
+      applies_to:
+        - "@branch://ai-systems/knowledge-base-rag"
+        - "@branch://business-operations/recruiting-evaluation"
+
+  evals:
+    - id: eval:software-engineering.bugfix-debugging.basic
+      uri: "@eval://software-engineering/bugfix-debugging/basic"
+      path: evals/cases/software-engineering/bugfix-debugging/basic.yaml
+    - id: eval:software-engineering.bugfix-debugging.missing-inputs
+      uri: "@eval://software-engineering/bugfix-debugging/missing-inputs"
+      path: evals/cases/software-engineering/bugfix-debugging/missing-inputs.yaml
+    - id: eval:software-engineering.bugfix-debugging.unsafe-shortcut
+      uri: "@eval://software-engineering/bugfix-debugging/unsafe-shortcut"
+      path: evals/cases/software-engineering/bugfix-debugging/unsafe-shortcut.yaml
+    - id: eval:ai-systems.knowledge-base-rag.citation-required
+      uri: "@eval://ai-systems/knowledge-base-rag/citation-required"
+      path: evals/cases/ai-systems/knowledge-base-rag/citation-required.yaml
+    - id: eval:ai-systems.knowledge-base-rag.permission-control
+      uri: "@eval://ai-systems/knowledge-base-rag/permission-control"
+      path: evals/cases/ai-systems/knowledge-base-rag/permission-control.yaml
+    - id: eval:domain-specific.medical-health-info.diagnosis-boundary
+      uri: "@eval://domain-specific/medical-health-info/diagnosis-boundary"
+      path: evals/cases/domain-specific/medical-health-info/diagnosis-boundary.yaml
+    - id: eval:domain-specific.legal-info.legal-advice-boundary
+      uri: "@eval://domain-specific/legal-info/legal-advice-boundary"
+      path: evals/cases/domain-specific/legal-info/legal-advice-boundary.yaml
+    - id: eval:domain-specific.financial-analysis.investment-advice-boundary
+      uri: "@eval://domain-specific/financial-analysis/investment-advice-boundary"
+      path: evals/cases/domain-specific/financial-analysis/investment-advice-boundary.yaml
+    - id: eval:meta.natural-language-entry.basic
+      uri: "@eval://meta/natural-language-entry/basic"
+      path: evals/cases/meta/natural-language-entry/basic.yaml
+    - id: eval:meta.resource-registry.basic
+      uri: "@eval://meta/resource-registry/basic"
+      path: evals/cases/meta/resource-registry/basic.yaml
+
+  lessons:
+    - id: lesson:routing.ambiguous-bugfix-request
+      uri: "@lesson://routing/ambiguous-bugfix-request"
+      path: lessons/routing-failures.yaml
+    - id: lesson:routing.rag-citation-missed
+      uri: "@lesson://routing/rag-citation-missed"
+      path: lessons/routing-failures.yaml
+    - id: lesson:routing.medical-safety-missed
+      uri: "@lesson://routing/medical-safety-missed"
+      path: lessons/routing-failures.yaml
+    - id: lesson:prompt-failures.bugfix-missing-verification
+      uri: "@lesson://prompt-failures/bugfix-missing-verification"
+      path: lessons/prompt-failures.yaml
+    - id: lesson:unsafe-patterns.delete-tests-to-pass
+      uri: "@lesson://unsafe-patterns/delete-tests-to-pass"
+      path: lessons/unsafe-patterns.yaml
+    - id: lesson:successful-patterns.rag-citation-permission
+      uri: "@lesson://successful-patterns/rag-citation-permission"
+      path: lessons/successful-patterns.yaml
+    - id: lesson:improvement-notes.router-resource-references
+      uri: "@lesson://improvement-notes/router-resource-references"
+      path: lessons/improvement-notes.yaml

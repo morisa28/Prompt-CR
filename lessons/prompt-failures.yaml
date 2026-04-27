@@ -1,0 +1,54 @@
+lessons:
+  - id: lesson.prompt-failures.bugfix-missing-verification.001
+    type: prompt-failure
+    related_resources:
+      - "@branch://software-engineering/bugfix-debugging"
+      - "@template://coding-agent/bugfix"
+      - "@checklist://coding-agent/final-review"
+      - "@eval://software-engineering/bugfix-debugging/basic"
+    trigger: "bugfix prompt 包含修复步骤，但没有要求运行原失败命令或相关测试。"
+    failure_mode: "目标 agent 可能报告已修复，但没有可验证证据。"
+    root_cause: "模板只强调修改，没有把验证命令和失败时报告写成硬性输出。"
+    fix: "bugfix prompt 必须包含原失败命令、相关测试、无法运行时的阻塞说明和最终验证结果。"
+    update_targets:
+      - templates.md
+      - branches/software-engineering/bugfix-debugging.md
+      - checklists.md
+    severity: medium
+    status: open
+
+  - id: lesson.prompt-failures.data-analysis-missing-dictionary.001
+    type: prompt-failure
+    related_resources:
+      - "@branch://data-analytics/data-analysis"
+      - "@template://data-analysis/reproducible-report"
+      - "@checklist://data-analysis"
+      - "@eval://data-analytics/data-analysis/missing-data-dictionary"
+    trigger: "用户要求分析 CSV，但没有提供字段含义、指标口径或时间范围。"
+    failure_mode: "生成的 prompt 直接要求输出结论，导致字段误解和指标不可复现。"
+    root_cause: "数据分析路径没有把 data dictionary 和 metric definitions 作为关键输入。"
+    fix: "prompt 必须先建立字段字典和口径表；字段不明时标注 `[待补充]`，禁止把未知字段解释成事实。"
+    update_targets:
+      - branches/data-analytics/data-analysis.md
+      - checklists.md
+      - evals/cases/data-analytics/data-analysis/missing-data-dictionary.yaml
+    severity: medium
+    status: open
+
+  - id: lesson.prompt-failures.prd-missing-acceptance.001
+    type: prompt-failure
+    related_resources:
+      - "@branch://product-design-business/product-requirements"
+      - "@template://product/prd-to-dev-agent"
+      - "@checklist://product-requirements"
+      - "@eval://product-design-business/product-requirements/dev-agent-output"
+    trigger: "用户要求把产品想法转成开发任务，但没有明确验收标准。"
+    failure_mode: "生成的开发 prompt 只有功能描述，coding agent 无法判断完成。"
+    root_cause: "PRD 模板没有强制输出 Given/When/Then、非目标、边界条件和测试验收。"
+    fix: "PRD prompt 必须包含用户故事、可测试验收标准、非目标、成功指标，以及交给开发 agent 的验证方式。"
+    update_targets:
+      - templates.md
+      - branches/product-design-business/product-requirements.md
+      - checklists.md
+    severity: medium
+    status: open

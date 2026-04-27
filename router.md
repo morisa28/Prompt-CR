@@ -18,7 +18,8 @@
 3. 选择唯一主分支：只按最终交付物决定，不按关键词抢占。
 4. 选择辅助分支：只补充工具适配、验证、报告、引用、权限、安全边界或多模态输入处理。
 5. 处理冲突和缺失输入：按安全边界、用户约束、项目上下文、工具能力、输出格式的优先级排序。
-6. 输出标准化路由结果和 prompt 构造策略。
+6. 从 `metadata/resources.yaml` 选择 branch、template、checklist、example、eval、adapter、safety 和 lesson 资源。
+7. 输出标准化路由结果、资源引用和 prompt 构造策略。
 
 ## 3. Primary Branch Selection
 
@@ -102,6 +103,56 @@
 - 代码 + 文档 + 产品混合：按最终交付物决定。若要给开发 Agent 执行，主分支通常是 `coding-feature-development` 或 `product-requirements`，报告写作和测试作为辅助。
 - 只读 vs 修改冲突：用户说“分析/理解/评估”时默认只读；用户说“修复/实现/改”时允许最小修改并加验证。
 
+## 5.1 Resource Selection Rules
+
+路由结果必须尽量输出资源 URI，便于 AI Agent 不用人工翻目录即可组合 prompt。
+
+资源选择规则：
+- 主分支：输出一个 `@branch://...`，由最终交付物决定。
+- 辅助分支：输出 0 到 3 个 `@branch://...`，只用于工具适配、验证、引用、报告、多模态或安全边界。
+- 模板：优先使用 `metadata/resources.yaml` 中 linked_templates；没有专用模板时使用 `@template://general/task` 或对应分支模板。
+- 检查表：至少包含通用 prompt 质量、路由、缺失输入、输出格式和最终交付前检查表；coding/high-risk/RAG/data 等任务加入专属检查表。
+- Adapter：用户明确 Codex、Codex CLI、Claude Code、Gemini CLI、ChatGPT 或通用 Agent 时，必须选择对应 `@adapter://...`。
+- Safety：医疗、法律、金融、安全、隐私、招聘/人事、儿童/教育、生产系统风险出现时，必须选择对应 `@safety://...`。
+- Eval：如果存在同类 `@eval://...`，加入“可匹配 eval”，用于最终 prompt 自检。
+- Lesson：如果请求命中已知失败模式或成功模式，加入 `@lesson://...`，并把 lesson 的 `fix` 写入 prompt 构造策略。
+
+## 5.2 Adapter Selection
+
+| 用户目标工具 | Adapter |
+| --- | --- |
+| Codex | `@adapter://codex` |
+| Codex CLI | `@adapter://codex-cli` |
+| Claude Code | `@adapter://claude-code` |
+| Gemini CLI | `@adapter://gemini-cli` |
+| ChatGPT | `@adapter://chatgpt` |
+| 未说明但任务是仓库修改 | 默认 `@adapter://codex` 或通用 coding agent 约束 |
+
+## 5.3 Safety Selection
+
+| 风险信号 | Safety Resource |
+| --- | --- |
+| 症状、诊断、处方、停药、换药、体检报告 | `@safety://medical-boundary` |
+| 合同、合法性、能否签、诉讼、合规结论 | `@safety://legal-boundary` |
+| 买卖资产、收益保证、个性化投资建议 | `@safety://financial-boundary` |
+| 漏洞、权限、攻击、防护、日志、内部系统 | `@safety://security-boundary` |
+| 个人数据、内部文档、候选人、客户记录、权限隔离 | `@safety://privacy-boundary` |
+
+## 5.4 Eval Matching And Lesson Lookup
+
+Eval matching：
+- 从主分支、风险领域和目标工具选择相似 eval。
+- 优先匹配同分支的正常输入、缺失输入、风险/误用输入。
+- 生成 prompt 后检查 expected features 是否出现，forbidden features 是否缺席。
+
+Lesson lookup：
+- bugfix 缺日志：`@lesson://routing/ambiguous-bugfix-request`。
+- RAG 缺 citation：`@lesson://routing/rag-citation-missed`。
+- 医疗诊断越界：`@lesson://routing/medical-safety-missed`。
+- 删除测试掩盖 bug：`@lesson://unsafe-patterns/delete-tests-to-pass`。
+- RAG 无来源回答：`@lesson://unsafe-patterns/rag-unsourced-answer`。
+- registry 改进：`@lesson://improvement-notes/router-resource-references`、`@lesson://improvement-notes/registry-bind-evals-lessons`。
+
 ## 6. Risk Levels
 
 | 风险等级 | 场景 | 路由要求 |
@@ -113,11 +164,21 @@
 ## 7. Standard Routing Output
 
 ```text
+需求摘要：
+最终交付物：
 主分支：
 辅助分支：
 命中原因：
+资源引用：
 缺失输入：
 风险等级：
+安全边界：
+目标工具 adapter：
+建议模板：
+建议检查表：
+可参考示例：
+可匹配 eval：
+相关 lessons：
 是否需要澄清：
 是否可以直接生成 prompt：
 prompt 构造策略：
@@ -135,6 +196,7 @@ prompt 构造策略：
 路由完成后，最终 prompt 必须组合：
 - 主分支的目标、输入、步骤、硬约束和验收标准。
 - 辅助分支的工具适配、验证、引用、报告或安全规则。
+- `metadata/resources.yaml` 的模板、检查表、adapter、safety、eval 和 lesson 引用。
 - `common-principles.md` 的缺失输入、约束优先级、防幻觉和高风险规则。
 - `checklists.md` 的通用检查表、路由检查表和分支专属检查表。
 

@@ -47,6 +47,31 @@
 - 知识引用：需要来源、引用、知识库时使用 `ai-systems/knowledge-base-rag` 或文档研究分支。
 - 高风险领域：医疗、法律、金融、安全、招聘/人事、隐私、儿童/教育必须加入安全边界。
 
+## 3.1 Select Resources
+
+路由后必须从 `metadata/resources.yaml` 选择可组合资源。资源选择不是额外文档索引步骤，而是 prompt 构造输入。
+
+资源选择顺序：
+1. `@branch://...`：主分支和辅助分支。
+2. `@template://...`：与主分支匹配的模板；多分支任务可再加入组合模板。
+3. `@checklist://...`：通用质量、分支质量、缺失输入、输出格式和最终交付检查表。
+4. `@adapter://...`：用户明确目标工具时必须选择。Codex、Codex CLI、Claude Code、Gemini CLI、ChatGPT 分别使用对应 adapter。
+5. `@safety://...`：高风险领域必须选择。医疗、法律、金融、安全、隐私等不得只依赖普通分支说明。
+6. `@eval://...`：如果存在相似 eval case，生成 prompt 后按 expected/forbidden 对照。
+7. `@lesson://...`：如果请求命中已知失败模式或成功模式，把 lesson 的 `fix` 注入构造策略。
+
+资源引用格式示例：
+
+```text
+使用资源：
+- @branch://software-engineering/bugfix-debugging
+- @template://coding-agent/bugfix
+- @adapter://codex
+- @checklist://coding-agent/final-review
+- @eval://software-engineering/bugfix-debugging/missing-inputs
+- @lesson://routing/ambiguous-bugfix-request
+```
+
 ## 4. Identify Missing Inputs
 
 把缺失信息分为四类。
@@ -101,20 +126,53 @@
 - 是否存在编造文件、数据、引用、事实或专业结论的风险？
 - 高风险任务是否收紧到安全范围？
 
+## 7.1 Optional Eval Matching
+
+如果 `metadata/resources.yaml` 或 `evals/cases/` 中存在相似 eval case，必须用该 case 对照生成 prompt。
+
+Eval matching 检查：
+- `expected_primary_branch` 是否命中。
+- `expected_auxiliary_branches` 是否覆盖必要辅助能力。
+- `expected_resources` 是否包含主分支、模板、checklist、adapter、safety 或 lesson。
+- `required_missing_inputs` 是否已标记、追问或阻塞。
+- `expected_prompt_features` 是否全部出现。
+- `forbidden_prompt_features` 是否全部未出现。
+- `acceptance_criteria` 是否可判断。
+
+Eval 只检查 prompt 本身是否合格，不判断目标模型最终是否真的修复 bug、完成 RAG 或得出正确分析结论。
+
+## 7.2 Learn From Failures
+
+如果生成的 prompt 未通过 checklist 或 eval，应建议新增或更新 lesson。不要把 lesson 当运行时记忆；它只是项目经验沉淀。
+
+Lesson 建议至少包含：
+- 触发条件。
+- 失败模式。
+- 根因。
+- 修复建议。
+- 需要更新的资源。
+- 严重等级。
+- 状态。
+
 ## 8. Finalize
 
 最终输出格式：
 
 ```text
 需求摘要：
+最终交付物：
 主分支：
 辅助分支：
 命中原因：
+使用资源：
 缺失信息：
 风险等级：
+安全边界：
 使用模板：
 最终 prompt：
 自检结果：
+可能关联的 eval：
+可能新增的 lesson：
 ```
 
 如果用户只要最终 prompt，可以省略路由说明，但内部仍应完成路由和自检。

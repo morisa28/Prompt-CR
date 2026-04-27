@@ -1,0 +1,62 @@
+lessons:
+  - id: lesson.improvement-notes.router-resource-references.001
+    type: improvement-note
+    related_resources:
+      - "@checklist://resource-registry"
+      - "@eval://meta/natural-language-entry/basic"
+      - "@eval://meta/resource-registry/basic"
+    trigger: "router 只输出主分支和辅助分支，没有输出资源引用。"
+    failure_mode: "AI Agent 需要人工翻文档才能找到模板、checklist、eval、adapter、safety 和 lesson。"
+    root_cause: "路由输出格式缺少 resource selection 层。"
+    fix: "router 标准输出增加资源引用、目标工具 adapter、建议模板、建议检查表、可匹配 eval 和相关 lessons。"
+    update_targets:
+      - router.md
+      - prompt-generation-protocol.md
+      - SKILL.md
+    severity: medium
+    status: open
+
+  - id: lesson.improvement-notes.examples-include-matched-eval.001
+    type: improvement-note
+    related_resources:
+      - "@example://natural-language/bugfix-codex-build"
+      - "@checklist://prompt-eval-quality"
+    trigger: "示例展示最终 prompt，但没有说明匹配哪个 eval。"
+    failure_mode: "读者无法用示例反向验证 prompt 是否满足 expected/forbidden。"
+    root_cause: "examples 还偏教学说明，缺少 eval 对照字段。"
+    fix: "自然语言完整示例必须包含匹配 eval 和是否应新增 lesson。"
+    update_targets:
+      - examples.md
+      - evals/README.md
+    severity: low
+    status: open
+
+  - id: lesson.improvement-notes.checklists-forbidden-features.001
+    type: improvement-note
+    related_resources:
+      - "@checklist://prompt-eval-quality"
+      - "@checklist://eval-case-quality"
+    trigger: "checklist 只检查 expected features，没有检查 forbidden features。"
+    failure_mode: "prompt 可能包含越界、扩大范围、删除测试、无来源回答等禁用内容但仍被误判通过。"
+    root_cause: "验收清单缺少 forbidden feature 检查。"
+    fix: "Prompt 评测检查表和 eval case 质量检查表必须同时检查 expected_prompt_features 与 forbidden_prompt_features。"
+    update_targets:
+      - checklists.md
+      - evals/schema.md
+    severity: medium
+    status: open
+
+  - id: lesson.improvement-notes.registry-bind-evals-lessons.001
+    type: improvement-note
+    related_resources:
+      - "@checklist://resource-registry"
+      - "@eval://meta/resource-registry/basic"
+    trigger: "registry 只索引 branch，没有把 eval 和 lesson 绑定回相关资源。"
+    failure_mode: "未来 CLI 或 Web UI 难以显示某个分支的测试覆盖和已知失败模式。"
+    root_cause: "资源关系没有被机器可读地表达。"
+    fix: "重点 branch 记录 linked_evals、linked_lessons、linked_templates、linked_checklists、compatible_adapters 和 safety_resources。"
+    update_targets:
+      - metadata/resources.yaml
+      - scripts/skill_hub_manager.py
+    severity: medium
+    status: open
