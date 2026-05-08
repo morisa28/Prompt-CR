@@ -8,16 +8,16 @@
 
 ## 分级问答
 
-| Level | 问题 | 回答 |
-|---:|---|---|
-| 0 | 任务类型 | 代码审查 |
-| 1 | 最终结果 | 输出按严重程度排序的 findings |
-| 2 | 工作目录 | `F:/workspace/payments-api` |
-| 2 | 审查范围 | `git diff origin/main...HEAD` |
-| 2 | 相关文件 | `src/routes/payments.ts`、`src/services/refund.ts` |
-| 3 | 关注点 | 正确性、权限、幂等性、测试缺口 |
-| 3 | 禁止事项 | 不修改文件，只输出审查意见 |
-| 4 | 验证方式 | 可建议测试，但不要声称已运行 |
+| Level | 问题     | 回答                                               |
+| ----: | -------- | -------------------------------------------------- |
+|     0 | 任务类型 | 代码审查                                           |
+|     1 | 最终结果 | 输出按严重程度排序的 findings                      |
+|     2 | 工作目录 | `F:/workspace/payments-api`                        |
+|     2 | 审查范围 | `git diff origin/main...HEAD`                      |
+|     2 | 相关文件 | `src/routes/payments.ts`、`src/services/refund.ts` |
+|     3 | 关注点   | 正确性、权限、幂等性、测试缺口                     |
+|     3 | 禁止事项 | 不修改文件，只输出审查意见                         |
+|     4 | 验证方式 | 可建议测试，但不要声称已运行                       |
 
 ## 最终 Prompt
 

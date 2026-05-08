@@ -2,7 +2,11 @@ import { buildQuestionPlan, missingFieldsFromQuestions } from "../core/question-
 import { createPromptMistake, type PromptMistake } from "../core/lesson-engine.ts";
 import { generatePrompt } from "../core/prompt-generator.ts";
 import { reviewGeneratedPrompt, type PromptReviewResult } from "../core/prompt-reviewer.ts";
-import { createRequirementSession, type RequirementAnswers, type StructuredRequirement } from "../core/requirement-session.ts";
+import {
+  createRequirementSession,
+  type RequirementAnswers,
+  type StructuredRequirement,
+} from "../core/requirement-session.ts";
 import { scorePrompt, type PromptScoreReport } from "../core/prompt-scorer.ts";
 import type { ScoringDimension } from "../domain/scoring-rubric.ts";
 import type { ScenarioId, TargetTool } from "../domain/scenarios.ts";
@@ -57,17 +61,18 @@ export function evaluateCoachPrompt(input: CoachEvaluationInput): CoachEvaluatio
   const generatedPrompt = generatePrompt(session);
   const generatedReview = reviewGeneratedPrompt(generatedPrompt);
   const weakDimensions = generatedReview.weakDimensions as ScoringDimension[];
-  const lessonCandidate = weakDimensions.length > 0
-    ? createPromptMistake({
-      scenario: session.scenario,
-      originalPrompt: session.originalPrompt,
-      generatedPrompt,
-      before: originalScore,
-      after: generatedReview.score,
-      weakDimensions,
-      affectedTemplate: "src/domain/prompt-template.ts",
-    })
-    : null;
+  const lessonCandidate =
+    weakDimensions.length > 0
+      ? createPromptMistake({
+          scenario: session.scenario,
+          originalPrompt: session.originalPrompt,
+          generatedPrompt,
+          before: originalScore,
+          after: generatedReview.score,
+          weakDimensions,
+          affectedTemplate: "src/domain/prompt-template.ts",
+        })
+      : null;
 
   return {
     session,
@@ -86,6 +91,21 @@ export function evaluateCoachPrompt(input: CoachEvaluationInput): CoachEvaluatio
       structured: structuredScore.totalScore - originalScore.totalScore,
       generated: generatedReview.score.totalScore - originalScore.totalScore,
     },
-    lessonCandidate,
+    lessonCandidate:
+      lessonCandidate ??
+      (originalScore.totalScore < 45 || generatedReview.score.antiGamingWarnings.length > 0
+        ? createPromptMistake({
+            scenario: session.scenario,
+            originalPrompt: session.originalPrompt,
+            generatedPrompt,
+            before: originalScore,
+            after: generatedReview.score,
+            weakDimensions: Object.entries(originalScore.dimensionScores)
+              .filter((entry) => entry[1] < 6)
+              .map(([dimension]) => dimension as ScoringDimension)
+              .slice(0, 3),
+            affectedTemplate: "src/domain/prompt-template.ts",
+          })
+        : null),
   };
 }

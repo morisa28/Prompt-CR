@@ -8,16 +8,16 @@
 
 ## 分级问答
 
-| Level | 问题 | 回答 |
-|---:|---|---|
-| 0 | 任务类型 | 测试生成 |
-| 1 | 最终结果 | 为登录表单补充可运行的单元/组件测试 |
-| 2 | 工作目录 | `F:/workspace/admin-web` |
-| 2 | 相关文件 | `src/components/LoginForm.tsx`、`src/api/auth.ts`、`src/components/__tests__/` |
-| 2 | 测试框架 | Vitest + Testing Library |
-| 3 | 覆盖行为 | 空输入校验、错误密码提示、成功登录回调、提交中禁用按钮 |
-| 3 | 禁止事项 | 不改业务逻辑，不跳过现有测试，不引入新测试框架 |
-| 4 | 验证命令 | `npm test -- LoginForm` |
+| Level | 问题     | 回答                                                                           |
+| ----: | -------- | ------------------------------------------------------------------------------ |
+|     0 | 任务类型 | 测试生成                                                                       |
+|     1 | 最终结果 | 为登录表单补充可运行的单元/组件测试                                            |
+|     2 | 工作目录 | `F:/workspace/admin-web`                                                       |
+|     2 | 相关文件 | `src/components/LoginForm.tsx`、`src/api/auth.ts`、`src/components/__tests__/` |
+|     2 | 测试框架 | Vitest + Testing Library                                                       |
+|     3 | 覆盖行为 | 空输入校验、错误密码提示、成功登录回调、提交中禁用按钮                         |
+|     3 | 禁止事项 | 不改业务逻辑，不跳过现有测试，不引入新测试框架                                 |
+|     4 | 验证命令 | `npm test -- LoginForm`                                                        |
 
 ## 最终 Prompt
 

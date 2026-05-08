@@ -4,3 +4,4 @@ import "./prompt-generator.test.ts";
 import "./lesson-engine.test.ts";
 import "./web-evaluation.test.ts";
 import "./web-server.test.ts";
+import "./eval-cases.test.ts";

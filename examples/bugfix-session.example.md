@@ -8,17 +8,17 @@
 
 ## 分级问答
 
-| Level | 问题 | 回答 |
-|---:|---|---|
-| 0 | 你想让 AI 帮你完成哪类代码生成任务？ | Bug 修复与调试 |
-| 1 | 最终希望得到什么结果？ | 修复构建失败，并保持现有页面行为不变 |
-| 2 | 工作目录在哪里？ | `F:/workspace/course-app` |
-| 2 | 错误日志是什么？ | `TS2322: Type 'undefined' is not assignable to type 'Course'` |
-| 2 | 复现步骤是什么？ | `npm run build` |
-| 2 | 相关文件在哪里？ | `src/pages/CourseDetail.tsx`、`src/api/course.ts` |
-| 3 | 允许修改范围是什么？ | 只改课程详情数据加载和类型处理相关文件 |
-| 3 | 禁止事项是什么？ | 不新增依赖、不删除测试、不全仓库格式化、不改路由 |
-| 4 | 如何验证？ | `npm run build`、`npm test -- --runInBand` |
+| Level | 问题                                 | 回答                                                          |
+| ----: | ------------------------------------ | ------------------------------------------------------------- |
+|     0 | 你想让 AI 帮你完成哪类代码生成任务？ | Bug 修复与调试                                                |
+|     1 | 最终希望得到什么结果？               | 修复构建失败，并保持现有页面行为不变                          |
+|     2 | 工作目录在哪里？                     | `F:/workspace/course-app`                                     |
+|     2 | 错误日志是什么？                     | `TS2322: Type 'undefined' is not assignable to type 'Course'` |
+|     2 | 复现步骤是什么？                     | `npm run build`                                               |
+|     2 | 相关文件在哪里？                     | `src/pages/CourseDetail.tsx`、`src/api/course.ts`             |
+|     3 | 允许修改范围是什么？                 | 只改课程详情数据加载和类型处理相关文件                        |
+|     3 | 禁止事项是什么？                     | 不新增依赖、不删除测试、不全仓库格式化、不改路由              |
+|     4 | 如何验证？                           | `npm run build`、`npm test -- --runInBand`                    |
 
 ## 评分摘要
 

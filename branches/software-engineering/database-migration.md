@@ -1,14 +1,17 @@
 # Database Migration
 
 ## 1. Purpose
+
 用于为数据库 schema 修改、ORM migration、数据迁移、字段新增/删除/重命名、索引调整、数据回填、零停机迁移和迁移失败回滚生成安全 prompt。本分支默认保护线上数据，生产数据库任务优先 plan，不直接执行。
 
 ## 2. Trigger Conditions
+
 - 用户提到 database migration、schema、migration、Prisma、TypeORM、Alembic、Django migrations、Rails migrations。
 - 用户要求新增、删除、重命名字段，调整索引、约束、默认值、外键或唯一性。
 - 用户要求数据回填、零停机迁移、迁移失败排查或 rollback 方案。
 
 ## 3. Required Inputs
+
 - {{database_type}} 数据库类型和版本。
 - {{orm_or_migration_tool}} ORM 或 migration 工具。
 - {{current_schema}} 当前 schema 或 schema 文件路径。
@@ -22,11 +25,13 @@
 - {{affected_services}} 受影响服务或 API。
 
 缺失信息处理：
+
 - 备份状态未知时必须把执行生产迁移列为阻塞问题。
 - 数据量未知时要求先估算表大小、索引大小和锁表风险。
 - 生产环境默认只输出方案、migration 文件建议和验证步骤，不直接执行 migration。
 
 ## 4. Prompt Construction Rules
+
 - 必须先读取现有 schema、migration 历史、ORM 配置和受影响代码路径。
 - 必须识别破坏性变更，例如删除字段、重命名字段、变更类型、收紧 null/unique/foreign key。
 - 必须区分 schema migration 和 data migration，并明确执行顺序。
@@ -36,6 +41,7 @@
 - 必须检查索引、约束、默认值、外键、唯一性、空值处理和大表锁表风险。
 
 ## 5. Hard Constraints
+
 - 禁止无备份执行破坏性操作。
 - 禁止直接删除字段或重命名字段导致数据丢失，除非有分阶段迁移和回滚。
 - 禁止在生产数据库直接执行未经测试的 migration。
@@ -43,7 +49,9 @@
 - 必须包含 rollback、备份、staging 验证和数据一致性检查。
 
 ## 6. Output Format
+
 最终 prompt 应要求目标模型输出：
+
 - 当前 schema 和 migration 历史摘要。
 - 破坏性变更识别。
 - schema migration 方案。
@@ -53,6 +61,7 @@
 - 受影响服务与残留风险。
 
 ## 7. Quality Checklist
+
 - [ ] 数据库类型和 migration 工具明确。
 - [ ] 当前 schema、目标 schema 和 migration 历史被要求读取。
 - [ ] schema migration 与 data migration 分开。
@@ -63,16 +72,18 @@
 - [ ] staging 测试和数据一致性验证明确。
 
 ## 8. Common Mistakes
-| Common Mistake | Risk | Repair |
-| --- | --- | --- |
-| 直接删除字段 | 数据不可恢复 | 分阶段弃用、备份、回填和延迟删除 |
-| 重命名字段一步到位 | 旧代码读写失败或数据丢失 | 增新字段、双写、回填、切读、再清理 |
-| 忽略旧版本应用兼容 | 滚动发布期间出错 | 设计向后兼容迁移顺序 |
-| 未考虑大表锁表 | 线上阻塞 | 评估数据量、索引创建方式和批量回填 |
-| 未准备 rollback 或备份 | 失败无法恢复 | 要求备份、回滚脚本和恢复演练 |
-| 未测试 migration | 生产失败 | 要求本地/staging apply 和 rollback 验证 |
+
+| Common Mistake         | Risk                     | Repair                                  |
+| ---------------------- | ------------------------ | --------------------------------------- |
+| 直接删除字段           | 数据不可恢复             | 分阶段弃用、备份、回填和延迟删除        |
+| 重命名字段一步到位     | 旧代码读写失败或数据丢失 | 增新字段、双写、回填、切读、再清理      |
+| 忽略旧版本应用兼容     | 滚动发布期间出错         | 设计向后兼容迁移顺序                    |
+| 未考虑大表锁表         | 线上阻塞                 | 评估数据量、索引创建方式和批量回填      |
+| 未准备 rollback 或备份 | 失败无法恢复             | 要求备份、回滚脚本和恢复演练            |
+| 未测试 migration       | 生产失败                 | 要求本地/staging apply 和 rollback 验证 |
 
 ## 9. Reusable Template
+
 ```text
 你是 {{target_ai_tool}}，请设计数据库迁移 prompt。
 
@@ -105,6 +116,7 @@ ORM/migration 工具：{{orm_or_migration_tool}}
 ```
 
 ## 10. Example
+
 用户原始需求：
 
 ```text

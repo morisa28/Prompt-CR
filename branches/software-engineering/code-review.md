@@ -1,26 +1,31 @@
 # Code Review
 
 ## 1. Purpose
+
 用于让 agent 以代码审查方式输出可定位、可修复的问题清单。 本分支只处理该场景专属 prompt 构造；跨场景原则使用 `../../common-principles.md`。
 
 ## 2. Trigger Conditions
+
 - 用户要求 review 代码
 - 用户要求找 bug、性能问题或安全问题
 - 用户给 PR/diff 要审查
 
 ## 3. Required Inputs
+
 - {{working_directory}} 工作目录
 - {{review_scope}} 审查范围
 - {{diff_or_files}} diff 或文件
 - {{review_focus}} 关注点
 
 缺失信息处理：
+
 - 未指定关注点时按正确性、回归、安全、性能、测试审查
 - 没有 diff 时先读取相关文件并说明范围
 - 涉及安全、金钱、医疗、法律、生产数据或大范围改动时，缺失的关键边界必须标注为阻塞问题。
 - 非阻塞缺失项使用 `[待补充: field]`，并在最终 prompt 中要求目标模型标注假设。
 
 ## 4. Prompt Construction Rules
+
 - 按严重程度排序
 - 区分必须修复和建议
 - 指向具体文件或代码位置
@@ -29,6 +34,7 @@
 - 需要适配 Codex、Codex CLI、Claude Code、Gemini CLI 或 ChatGPT 时，必须加入目标工具的工作方式、权限边界和最终报告格式。
 
 ## 5. Hard Constraints
+
 - 禁止只给总体印象
 - 禁止无证据指责
 - 安全项只给防御性修复，不给利用步骤
@@ -36,13 +42,16 @@
 - 不确定时必须标注假设或提出阻塞问题。
 
 ## 6. Output Format
+
 最终 prompt 应要求目标模型输出：
+
 - Findings
 - Open questions
 - Test gaps
 - Summary
 
 ## 7. Quality Checklist
+
 - [ ] 每条发现有位置
 - [ ] 严重程度合理
 - [ ] 修复建议可执行
@@ -51,13 +60,15 @@
 - [ ] 目标工具的执行环境和限制已写明。
 
 ## 8. Common Mistakes
-| Common Mistake | Risk | Repair |
-| --- | --- | --- |
-| 泛泛说代码不错 | 没有审查价值 | 以 findings 开头 |
-| 不分严重程度 | 修复优先级混乱 | 按 Critical/High/Medium/Low |
-| 缺位置 | 开发者无法修 | 引用文件和行或片段 |
+
+| Common Mistake | Risk           | Repair                      |
+| -------------- | -------------- | --------------------------- |
+| 泛泛说代码不错 | 没有审查价值   | 以 findings 开头            |
+| 不分严重程度   | 修复优先级混乱 | 按 Critical/High/Medium/Low |
+| 缺位置         | 开发者无法修   | 引用文件和行或片段          |
 
 ## 9. Reusable Template
+
 ```text
 你是 {{target_ai_tool}}，请处理以下 Code Review 任务。
 
@@ -93,6 +104,7 @@
 ```
 
 ## 10. Example
+
 用户原始需求：
 
 ```text

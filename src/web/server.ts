@@ -2,9 +2,19 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import { readFile } from "node:fs/promises";
 import { extname } from "node:path";
 import { pathToFileURL } from "node:url";
-import { buildQuestionPlan } from "../core/question-engine.ts";
+import { buildQuestionPlan, getNextFollowUpQuestions } from "../core/question-engine.ts";
+import { createRequirementSession } from "../core/requirement-session.ts";
+import { scorePrompt } from "../core/prompt-scorer.ts";
 import { scoringRubric } from "../domain/scoring-rubric.ts";
-import { getScenario, scenarios, type ScenarioId, type TargetTool } from "../domain/scenarios.ts";
+import {
+  coreScenarios,
+  extensionScenarios,
+  getScenario,
+  scenarios,
+  type ScenarioId,
+  type TargetTool,
+} from "../domain/scenarios.ts";
+import { loadMistakeSummary, savePromptMistake } from "../storage/lesson-store.ts";
 import { evaluateCoachPrompt, type CoachEvaluationInput } from "./evaluation.ts";
 
 const publicRoot = new URL("../../public/", import.meta.url);
@@ -98,7 +108,7 @@ async function route(request: IncomingMessage, response: ServerResponse): Promis
   const url = new URL(request.url ?? "/", "http://localhost");
 
   if (request.method === "GET" && url.pathname === "/api/scenarios") {
-    sendJson(response, 200, { scenarios, targetTools, scoringRubric });
+    sendJson(response, 200, { scenarios, coreScenarios, extensionScenarios, targetTools, scoringRubric });
     return;
   }
 
@@ -114,10 +124,57 @@ async function route(request: IncomingMessage, response: ServerResponse): Promis
   }
 
   if (request.method === "POST" && url.pathname === "/api/evaluate") {
-    const body = await readJsonBody(request) as CoachEvaluationInput;
+    const body = (await readJsonBody(request)) as CoachEvaluationInput;
     const scenario = parseScenario(body.scenario);
     const result = evaluateCoachPrompt({ ...body, scenario });
     sendJson(response, 200, result);
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/follow-up") {
+    const body = (await readJsonBody(request)) as CoachEvaluationInput;
+    const scenario = parseScenario(body.scenario);
+    const answers = {
+      originalPrompt: body.originalPrompt,
+      ...(body.answers ?? {}),
+    };
+    const session = createRequirementSession({
+      scenario,
+      targetTool: body.targetTool,
+      originalPrompt: body.originalPrompt ?? "",
+      answers,
+    });
+    const score = scorePrompt(session);
+    const followUpQuestions = getNextFollowUpQuestions({
+      scenario,
+      answers,
+      scoreReport: score,
+      maxQuestions: 3,
+    });
+    sendJson(response, 200, { score, followUpQuestions, session });
+    return;
+  }
+
+  if (request.method === "GET" && url.pathname === "/api/lessons/summary") {
+    sendJson(response, 200, await loadMistakeSummary());
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/lessons") {
+    const body = (await readJsonBody(request)) as CoachEvaluationInput & { lessonCandidate?: unknown };
+    if ("lessonCandidate" in body && body.lessonCandidate) {
+      await savePromptMistake(body.lessonCandidate as never);
+      sendJson(response, 201, { saved: true });
+      return;
+    }
+    const scenario = parseScenario(body.scenario);
+    const result = evaluateCoachPrompt({ ...body, scenario });
+    if (!result.lessonCandidate) {
+      sendJson(response, 200, { saved: false, reason: "No lesson candidate generated." });
+      return;
+    }
+    await savePromptMistake(result.lessonCandidate);
+    sendJson(response, 201, { saved: true, lesson: result.lessonCandidate });
     return;
   }
 

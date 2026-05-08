@@ -11,7 +11,8 @@ branches:
     negative_triggers: [new feature from scratch, broad architecture rewrite, read-only repo analysis]
     required_inputs: [working_directory, error_log, reproduction_steps, environment, expected_behavior, actual_behavior]
     optional_inputs: [recent_changes, related_files, verification_commands]
-    compatible_auxiliary_branches: [software-engineering.test-generation, software-engineering.cli-agent, software-engineering.repository-analysis]
+    compatible_auxiliary_branches:
+      [software-engineering.test-generation, software-engineering.cli-agent, software-engineering.repository-analysis]
     risk_level_default: medium
     output_sections: [root_cause, evidence, changed_files, key_changes, verification_commands, remaining_risks]
     eval_cases:
@@ -26,9 +27,11 @@ branches:
     purpose: Convert feature goals into executable coding-agent prompts.
     primary_triggers: [new feature, UI component, API implementation, interaction logic]
     negative_triggers: [specific error log, read-only analysis, pure review]
-    required_inputs: [working_directory, feature_goal, user_flow, acceptance_criteria, modification_scope, verification_steps]
+    required_inputs:
+      [working_directory, feature_goal, user_flow, acceptance_criteria, modification_scope, verification_steps]
     optional_inputs: [tech_stack, related_files, design_assets, api_contract, non_goals]
-    compatible_auxiliary_branches: [software-engineering.test-generation, software-engineering.cli-agent, software-engineering.api-design]
+    compatible_auxiliary_branches:
+      [software-engineering.test-generation, software-engineering.cli-agent, software-engineering.api-design]
     risk_level_default: medium
     output_sections: [implementation_plan, changed_files, key_logic, user_flow_coverage, verification, risks]
     eval_cases:
@@ -59,7 +62,8 @@ branches:
     negative_triggers: [delete tests, only fix bug, implementation from scratch]
     required_inputs: [working_directory, test_target, behaviors, test_level, test_framework, test_command]
     optional_inputs: [fixtures, coverage_goal, existing_tests, edge_cases]
-    compatible_auxiliary_branches: [software-engineering.bugfix-debugging, software-engineering.coding-feature-development]
+    compatible_auxiliary_branches:
+      [software-engineering.bugfix-debugging, software-engineering.coding-feature-development]
     risk_level_default: medium
     output_sections: [test_strategy, coverage_table, test_files, fixtures, command_results, uncovered_cases]
     eval_cases:
@@ -105,9 +109,11 @@ branches:
     purpose: Design API contracts, auth, errors, pagination, examples, and test scenarios.
     primary_triggers: [REST API, GraphQL, gRPC, OpenAPI, endpoint, request response]
     negative_triggers: [pure implementation without contract, marketing content]
-    required_inputs: [api_goal, api_style, consumer, resource_model, auth_method, request_fields, response_fields, error_cases]
+    required_inputs:
+      [api_goal, api_style, consumer, resource_model, auth_method, request_fields, response_fields, error_cases]
     optional_inputs: [versioning_requirement, rate_limit_requirement, openapi_required]
-    compatible_auxiliary_branches: [software-engineering.coding-feature-development, software-engineering.test-generation]
+    compatible_auxiliary_branches:
+      [software-engineering.coding-feature-development, software-engineering.test-generation]
     risk_level_default: medium
     output_sections: [api_goal, resources, schemas, auth, errors, examples, tests]
     eval_cases: []
@@ -177,7 +183,8 @@ branches:
     negative_triggers: [no command execution]
     required_inputs: [cli_tool, working_directory, allowed_commands, forbidden_actions, network_policy]
     optional_inputs: [approval_policy, report_format]
-    compatible_auxiliary_branches: [software-engineering.bugfix-debugging, software-engineering.coding-feature-development]
+    compatible_auxiliary_branches:
+      [software-engineering.bugfix-debugging, software-engineering.coding-feature-development]
     risk_level_default: medium
     output_sections: [task, command_plan, permission_boundary, failure_handling, final_report]
     eval_cases: []

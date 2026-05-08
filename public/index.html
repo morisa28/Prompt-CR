@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CodePrompt Coach</title>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <header class="topbar">
@@ -12,28 +12,28 @@
         <span class="brand-mark" aria-hidden="true"></span>
         <div>
           <h1>CodePrompt Coach</h1>
-          <p>分级澄清、Prompt 评分、生成与自审</p>
+          <p>Prompt-CR: Clarification & Review</p>
         </div>
       </div>
       <div class="status-strip" aria-label="流程状态">
-        <span>需求</span>
-        <span>评分</span>
+        <span>分析</span>
+        <span>追问</span>
         <span>生成</span>
-        <span>自审</span>
+        <span>错题</span>
       </div>
     </header>
 
     <main class="workspace">
       <section class="panel input-panel" aria-labelledby="input-title">
         <div class="panel-head">
-          <h2 id="input-title">任务输入</h2>
+          <h2 id="input-title">需求输入与动态追问</h2>
           <button class="secondary-button" id="load-sample" type="button">加载示例</button>
         </div>
 
         <form id="coach-form">
           <div class="field-grid">
             <label>
-              场景
+              核心场景
               <select id="scenario" name="scenario" data-testid="scenario-select"></select>
             </label>
             <label>
@@ -42,37 +42,70 @@
             </label>
           </div>
 
+          <details class="extension-scenarios">
+            <summary>扩展场景</summary>
+            <div id="extension-scenario-list" class="scenario-pills"></div>
+          </details>
+
           <label>
             原始需求
-            <textarea id="originalPrompt" name="originalPrompt" rows="4" data-testid="original-prompt" placeholder="例如：帮我让 Codex 修复 npm run build 报错，不要乱改。"></textarea>
+            <textarea
+              id="originalPrompt"
+              name="originalPrompt"
+              rows="4"
+              data-testid="original-prompt"
+              placeholder="例如：帮我让 Codex 修复 npm run build 报错，不要乱改。"
+            ></textarea>
           </label>
 
-          <div id="question-groups" class="question-groups" data-testid="question-groups"></div>
+          <div class="action-row">
+            <button class="secondary-button" id="analyze-button" type="button" data-testid="analyze-button">
+              分析当前需求
+            </button>
+            <button class="secondary-button" id="continue-button" type="button">继续追问</button>
+          </div>
 
-          <button class="primary-button" type="submit" data-testid="evaluate-button">生成 Prompt</button>
+          <section class="follow-up-box" aria-labelledby="follow-up-title">
+            <div class="section-head">
+              <h3 id="follow-up-title">关键追问</h3>
+              <span id="follow-up-count" class="mini-badge">0/3</span>
+            </div>
+            <div id="follow-up-questions" class="follow-up-list" data-testid="follow-up-questions"></div>
+          </section>
+
+          <details class="all-questions">
+            <summary>展开全部问题</summary>
+            <div id="question-groups" class="question-groups" data-testid="question-groups"></div>
+          </details>
+
+          <button class="primary-button" type="submit" data-testid="evaluate-button">一键生成最终 Prompt</button>
         </form>
       </section>
 
       <section class="panel output-panel" aria-labelledby="output-title">
         <div class="panel-head">
-          <h2 id="output-title">最终 Prompt</h2>
+          <h2 id="output-title">结构化摘要与最终 Prompt</h2>
           <button class="secondary-button" id="copy-prompt" type="button" disabled>复制</button>
         </div>
-        <div id="requirement-summary" class="summary-grid empty-state">
-          等待生成结果
-        </div>
-        <textarea id="generatedPrompt" class="prompt-output" rows="22" readonly data-testid="generated-prompt"></textarea>
+        <div id="requirement-summary" class="summary-grid empty-state">等待分析结果</div>
+        <textarea
+          id="generatedPrompt"
+          class="prompt-output"
+          rows="22"
+          readonly
+          data-testid="generated-prompt"
+        ></textarea>
       </section>
 
       <aside class="panel score-panel" aria-labelledby="score-title">
         <div class="panel-head">
-          <h2 id="score-title">评分与错题</h2>
-          <span id="review-badge" class="badge">未生成</span>
+          <h2 id="score-title">评分与错题本</h2>
+          <span id="review-badge" class="badge">未分析</span>
         </div>
 
         <div class="score-stack">
           <div class="score-card">
-            <h3>原始需求</h3>
+            <h3>当前需求</h3>
             <div id="original-score" class="score-meter" data-testid="original-score">--</div>
           </div>
           <div class="score-card">
@@ -88,6 +121,7 @@
         <div id="dimension-scores" class="dimension-list"></div>
         <div id="missing-info" class="feedback-block"></div>
         <div id="lesson-record" class="feedback-block"></div>
+        <div id="lesson-summary" class="feedback-block"></div>
       </aside>
     </main>
 

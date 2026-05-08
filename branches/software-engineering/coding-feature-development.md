@@ -9,20 +9,24 @@
 ## 2. Trigger Conditions
 
 明确命中：
+
 - 用户要求新增功能、页面、组件、接口、交互或状态逻辑。
 - 用户提供 PRD、用户故事、设计稿或功能规格，希望交给 coding agent 实现。
 - 用户要求把产品需求转成开发 prompt。
 
 可能命中：
+
 - 用户要求“做一个小工具/页面/功能”，但技术栈不明。
 - PRD 生成后需要开发 Agent prompt，本分支作为辅助。
 
 不应命中：
+
 - 用户提供报错并要求修复，使用 `bugfix-debugging`。
 - 用户要求重构但不新增行为，使用 `refactor-architecture`。
 - 用户只要求写测试，使用 `test-generation`。
 
 相似分支区别：
+
 - `product-requirements` 定义产品需求，本分支定义代码执行。
 - `api-design` 定义接口契约，本分支实现接口或集成。
 - `ux-ui-design` 定义体验方案，本分支实现 UI。
@@ -30,6 +34,7 @@
 ## 3. Required Inputs
 
 必需输入：
+
 - `{{working_directory}}` 工作目录。
 - `{{feature_goal}}` 功能目标。
 - `{{user_flow}}` 用户流程。
@@ -38,6 +43,7 @@
 - `{{verification_steps}}` 构建、测试或手动验证方式。
 
 可选输入：
+
 - `{{tech_stack}}` 技术栈。
 - `{{related_files}}` 相关文件。
 - `{{design_assets}}` 设计稿、截图或组件规范。
@@ -45,6 +51,7 @@
 - `{{non_goals}}` 非目标。
 
 缺失时处理：
+
 - 技术栈未知：读取项目配置和现有模式。
 - 相关文件未知：先搜索入口、路由、组件和测试。
 - 验收标准缺失：用用户流程生成可测试验收项，并标注 `[待补充: acceptance_criteria]`。
@@ -95,12 +102,12 @@
 
 ## 8. Common Mistakes
 
-| Common Mistake | Risk | Repair |
-| --- | --- | --- |
-| 只描述功能不写验收 | agent 不知道何时完成 | 把用户流程转成可测试验收标准 |
-| 不限制修改范围 | 改动扩散 | 写允许文件、禁止文件和非目标 |
-| 忽略错误/空/权限状态 | 用户流程不完整 | 要求覆盖正常、异常、空态、加载、权限 |
-| 不验证 | 交付不可确认 | 指定 build/test/manual verification |
+| Common Mistake       | Risk                 | Repair                               |
+| -------------------- | -------------------- | ------------------------------------ |
+| 只描述功能不写验收   | agent 不知道何时完成 | 把用户流程转成可测试验收标准         |
+| 不限制修改范围       | 改动扩散             | 写允许文件、禁止文件和非目标         |
+| 忽略错误/空/权限状态 | 用户流程不完整       | 要求覆盖正常、异常、空态、加载、权限 |
+| 不验证               | 交付不可确认         | 指定 build/test/manual verification  |
 
 ## 9. Reusable Template
 
@@ -147,6 +154,7 @@
 ```
 
 路由判断：
+
 - 主分支：`software-engineering/coding-feature-development`
 - 辅助分支：`software-engineering/test-generation`, `software-engineering/cli-agent`
 - 风险等级：Medium
@@ -158,6 +166,7 @@
 ```
 
 质量检查结果：
+
 - [x] 功能目标和用户流程明确。
 - [x] 限定修改范围和非目标。
 - [x] 覆盖状态和验证。

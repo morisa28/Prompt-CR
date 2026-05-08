@@ -29,6 +29,7 @@
 ```
 
 路由判断：
+
 - 主分支：`branches/software-engineering/bugfix-debugging.md`
 - 辅助分支：`branches/software-engineering/test-generation.md`, `branches/software-engineering/cli-agent.md`
 - 缺失输入：`[待补充: working_directory]`, `[待补充: error_log]`, `[待补充: environment]`, `[待补充: verification_commands]`
@@ -41,6 +42,7 @@
 ```
 
 自检结果：
+
 - [x] 主分支由最终交付物“修复构建失败”决定。
 - [x] 缺失日志和路径已标注。
 - [x] 包含最小修复、禁止事项和验证。
@@ -56,6 +58,7 @@
 ```
 
 路由判断：
+
 - 主分支：`branches/software-engineering/repository-analysis.md`
 - 辅助分支：`branches/documents-research/report-writing.md`
 - 缺失输入：`[待补充: working_directory]`, `[待补充: focus_areas]`, `[待补充: output_depth]`
@@ -68,6 +71,7 @@
 ```
 
 自检结果：
+
 - [x] 明确只读。
 - [x] 要求文件证据。
 - [x] 把建议作为报告输出而非执行。
@@ -83,6 +87,7 @@
 ```
 
 路由判断：
+
 - 主分支：`branches/ai-systems/knowledge-base-rag.md`
 - 辅助分支：`branches/software-engineering/security-threat-modeling.md`, `branches/documents-research/documentation-analysis.md`
 - 缺失输入：知识源、用户角色、权限规则、更新频率、评估问题集
@@ -95,6 +100,7 @@
 ```
 
 自检结果：
+
 - [x] 包含引用、权限、更新和评估。
 - [x] 检索不到依据时不编造。
 - [x] 权限作为高风险边界处理。
@@ -110,6 +116,7 @@
 ```
 
 路由判断：
+
 - 主分支：`branches/product-design-business/product-requirements.md`
 - 辅助分支：`branches/software-engineering/coding-feature-development.md`, `branches/software-engineering/test-generation.md`
 - 缺失输入：产品目标、目标用户、核心场景、MVP、非目标、成功指标、工作目录
@@ -122,6 +129,7 @@
 ```
 
 自检结果：
+
 - [x] PRD 和开发 prompt 分开。
 - [x] MVP、非目标和验收可测试。
 - [x] Codex 执行边界清楚。
@@ -137,6 +145,7 @@
 ```
 
 路由判断：
+
 - 主分支：`branches/domain-specific/medical-health-info.md`
 - 辅助分支：`branches/documents-research/report-writing.md`
 - 缺失输入：严重程度、伴随症状、既往史、用药、检查资料
@@ -149,6 +158,7 @@
 ```
 
 自检结果：
+
 - [x] 不诊断、不处方、不替代医生。
 - [x] 包含红旗信号。
 - [x] 转成就医准备材料。
@@ -164,6 +174,7 @@
 ```
 
 路由判断：
+
 - 主分支：`branches/domain-specific/finance-investment-analysis.md`
 - 辅助分支：`branches/data-analytics/data-analysis.md`, `branches/documents-research/report-writing.md`
 - 缺失输入：标的、数据来源、当前日期、时间范围、风险偏好
@@ -176,6 +187,7 @@
 ```
 
 自检结果：
+
 - [x] 没有买卖指令。
 - [x] 要求数据来源和日期。
 - [x] 区分事实、假设、观点和风险。
@@ -191,6 +203,7 @@
 ```
 
 路由判断：
+
 - 主分支：`branches/domain-specific/legal-policy-review.md`
 - 辅助分支：`branches/documents-research/documentation-analysis.md`, `branches/documents-research/report-writing.md`
 - 缺失输入：司法辖区、合同文本、交易背景、用户角色
@@ -203,6 +216,7 @@
 ```
 
 自检结果：
+
 - [x] 非法律建议边界明确。
 - [x] 要求司法辖区和合同文本。
 - [x] 把“能不能签”改成风险和律师问题。
@@ -218,6 +232,7 @@
 ```
 
 路由判断：
+
 - 主分支：`branches/data-analytics/data-analysis.md`
 - 辅助分支：`branches/data-analytics/visualization-dashboard.md`, `branches/documents-research/report-writing.md`
 - 缺失输入：数据源、字段含义、转化定义、时间范围、读者
@@ -230,6 +245,7 @@
 ```
 
 自检结果：
+
 - [x] 数据质量、指标口径和清洗规则明确。
 - [x] 有图表和报告输出。
 - [x] 防止因果过度结论。
@@ -245,6 +261,7 @@
 ```
 
 路由判断：
+
 - 主分支：`branches/meta/meta-skill-builder.md`
 - 辅助分支：`branches/general-prompt/prompt-review.md`, `branches/general-prompt/prompt-template-builder.md`
 - 缺失输入：项目路径、允许改动、重点分支、同步要求
@@ -257,6 +274,7 @@
 ```
 
 自检结果：
+
 - [x] 先审计再修改。
 - [x] 覆盖路由、模板、eval、manifest。
 - [x] 保留项目定位。
@@ -272,6 +290,7 @@
 ```
 
 路由判断：
+
 - 主分支：`branches/software-engineering/devops-ci.md`
 - 辅助分支：`branches/software-engineering/bugfix-debugging.md`, `branches/software-engineering/test-generation.md`, `branches/documents-research/report-writing.md`
 - 缺失输入：workflow 文件、失败日志、runner 环境、构建命令、测试命令
@@ -284,6 +303,7 @@
 ```
 
 自检结果：
+
 - [x] 主分支是 CI 失败修复，bugfix/test/report 是辅助。
 - [x] 包含 secrets 和测试边界。
 - [x] 输出可给负责人阅读的报告。
@@ -593,6 +613,7 @@
 ```
 
 为什么这样写：它绑定了该场景的关键输入，加入硬约束、输出格式和验收标准，并把不确定内容从事实中分离。
+
 ## Example 21. DevOps CI
 
 - 用户原始需求：帮我写一个 prompt，让 Codex 修复 GitHub Actions 构建失败。
@@ -730,17 +751,20 @@
 ```
 
 需求归一化：
+
 - 最终交付物：可交给 Codex 执行的 bugfix prompt。
 - 任务目标：定位 `npm run build` 失败根因，做最小修复并验证。
 - 已知事实：用户要求 Codex、build 报错、不要乱改。
 - 缺失输入：工作目录、错误日志、复现步骤、环境信息、测试命令。
 
 路由结果：
+
 - 主分支：`branches/software-engineering/bugfix-debugging.md`
 - 辅助分支：`branches/software-engineering/test-generation.md`, `branches/software-engineering/cli-agent.md`
 - 风险等级：Medium
 
 使用资源：
+
 - `@branch://software-engineering/bugfix-debugging`
 - `@template://coding-agent/bugfix`
 - `@adapter://codex`
@@ -776,6 +800,7 @@
 ```
 
 自检结果：
+
 - [x] 主分支由最终交付物决定。
 - [x] adapter 已选择 Codex。
 - [x] 缺失日志和复现步骤已处理。
@@ -794,16 +819,19 @@
 ```
 
 需求归一化：
+
 - 最终交付物：RAG prompt 设计任务。
 - 任务目标：设计知识源、chunking、metadata、retrieval、citation、permission 和 eval。
 - 缺失输入：知识源、文档类型、目标用户、权限规则、更新频率、评估问题。
 
 路由结果：
+
 - 主分支：`branches/ai-systems/knowledge-base-rag.md`
 - 辅助分支：`branches/software-engineering/security-threat-modeling.md`, `branches/documents-research/documentation-analysis.md`
 - 风险等级：High
 
 使用资源：
+
 - `@branch://ai-systems/knowledge-base-rag`
 - `@template://ai-systems/rag-design`
 - `@checklist://rag`
@@ -823,6 +851,7 @@
 ```
 
 自检结果：
+
 - [x] 引用和拒答规则明确。
 - [x] 权限作为高风险边界处理。
 - [x] 包含 eval 指标。
@@ -840,16 +869,19 @@
 ```
 
 需求归一化：
+
 - 最终交付物：安全的医疗信息整理 prompt。
 - 任务目标：整理症状、时间线、红旗信号和就医问题。
 - 缺失输入：症状、时间线、严重程度、伴随症状、病史、用药。
 
 路由结果：
+
 - 主分支：`branches/domain-specific/medical-health-info.md`
 - 辅助分支：`branches/documents-research/report-writing.md`
 - 风险等级：High
 
 使用资源：
+
 - `@branch://domain-specific/medical-health-info`
 - `@template://high-risk/safe-boundary`
 - `@safety://medical-boundary`
@@ -871,6 +903,7 @@
 ```
 
 自检结果：
+
 - [x] medical safety 已注入。
 - [x] 不诊断、不处方、不停药换药。
 - [x] 输出可用于就医准备。
@@ -888,16 +921,19 @@
 ```
 
 需求归一化：
+
 - 最终交付物：数据分析 prompt。
 - 任务目标：用可复现步骤分析转化下降相关因素，并输出图表报告。
 - 缺失输入：数据源、字段含义、转化定义、时间范围、报告读者。
 
 路由结果：
+
 - 主分支：`branches/data-analytics/data-analysis.md`
 - 辅助分支：`branches/data-analytics/visualization-dashboard.md`, `branches/documents-research/report-writing.md`
 - 风险等级：Medium
 
 使用资源：
+
 - `@branch://data-analytics/data-analysis`
 - `@template://data-analysis/reproducible-report`
 - `@checklist://data-analysis`
@@ -918,6 +954,7 @@
 ```
 
 自检结果：
+
 - [x] 数据字典和指标口径是前置步骤。
 - [x] 图表和报告作为辅助输出。
 - [x] 结论边界明确。
@@ -935,16 +972,19 @@
 ```
 
 需求归一化：
+
 - 最终交付物：Prompt 系统改进 prompt。
 - 任务目标：审计并设计 registry、eval、lessons、adapter 和 safety 资源。
 - 缺失输入：项目路径、允许改动、现有结构、同步要求。
 
 路由结果：
+
 - 主分支：`branches/meta/meta-skill-builder.md`
 - 辅助分支：`branches/general-prompt/prompt-review.md`, `branches/general-prompt/prompt-template-builder.md`
 - 风险等级：Medium
 
 使用资源：
+
 - `@branch://meta/meta-skill-builder`
 - `@checklist://prompt-system-improvement`
 - `@checklist://resource-registry`
@@ -967,6 +1007,7 @@
 ```
 
 自检结果：
+
 - [x] 先审计再修改。
 - [x] registry/eval/lesson 是轻量机制。
 - [x] 避免角色化能力和平台化跑偏。

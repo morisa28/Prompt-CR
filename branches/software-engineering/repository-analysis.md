@@ -9,20 +9,24 @@
 ## 2. Trigger Conditions
 
 明确命中：
+
 - 用户要求“分析整个 repo”“理解项目结构”“找入口文件”“生成项目说明”。
 - 用户要求评估仓库风险、技术债、模块关系、运行方式。
 - 用户明确说不要修改文件。
 
 可能命中：
+
 - 用户要 onboarding 文档、架构概览或交接报告。
 - 用户要基于仓库生成后续开发建议。
 
 不应命中：
+
 - 用户要修复具体错误，使用 `bugfix-debugging`。
 - 用户要实现新功能，使用 `coding-feature-development`。
 - 用户要 review PR/diff，使用 `code-review`。
 
 相似分支区别：
+
 - `documentation-analysis` 分析文档，不一定分析代码结构。
 - `report-writing` 组织报告，可作为辅助输出格式。
 - `plan-mode` 为未来修改做计划，但本分支核心是只读理解。
@@ -30,18 +34,21 @@
 ## 3. Required Inputs
 
 必需输入：
+
 - `{{working_directory}}` 仓库路径。
 - `{{analysis_goal}}` 分析目标。
 - `{{focus_areas}}` 关注模块或问题。
 - `{{output_depth}}` 概览、详细或交接级。
 
 可选输入：
+
 - `{{excluded_paths}}` 不读路径。
 - `{{known_questions}}` 用户已有疑问。
 - `{{report_audience}}` 报告读者。
 - `{{time_budget}}` 大仓库抽样策略。
 
 缺失时处理：
+
 - 未指定关注点：默认覆盖结构、技术栈、入口、运行、测试、核心模块、风险。
 - 大型仓库：先读 README、配置、顶层目录和明显入口，再说明抽样范围。
 - 缺少工作目录：标记 `[待补充: working_directory]`。
@@ -98,12 +105,12 @@
 
 ## 8. Common Mistakes
 
-| Common Mistake | Risk | Repair |
-| --- | --- | --- |
-| 只列文件树不解释职责 | 用户仍无法理解项目 | 输出核心模块表和数据流 |
-| 不读配置文件就判断技术栈 | 技术栈误判 | 要求读取 package、pyproject、Cargo、pom 等配置 |
-| 把猜测写成事实 | 误导后续开发 | 事实、推断、未读取区域分开 |
-| 顺手改代码 | 违背只读分析 | 明确禁止修改和破坏性命令 |
+| Common Mistake           | Risk               | Repair                                         |
+| ------------------------ | ------------------ | ---------------------------------------------- |
+| 只列文件树不解释职责     | 用户仍无法理解项目 | 输出核心模块表和数据流                         |
+| 不读配置文件就判断技术栈 | 技术栈误判         | 要求读取 package、pyproject、Cargo、pom 等配置 |
+| 把猜测写成事实           | 误导后续开发       | 事实、推断、未读取区域分开                     |
+| 顺手改代码               | 违背只读分析       | 明确禁止修改和破坏性命令                       |
 
 ## 9. Reusable Template
 
@@ -141,6 +148,7 @@
 ```
 
 路由判断：
+
 - 主分支：`software-engineering/repository-analysis`
 - 辅助分支：`documents-research/report-writing`
 - 风险等级：Medium
@@ -152,6 +160,7 @@
 ```
 
 质量检查结果：
+
 - [x] 明确只读。
 - [x] 要求文件证据。
 - [x] 包含模块、数据流、风险和建议。

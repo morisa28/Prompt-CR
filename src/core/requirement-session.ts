@@ -14,8 +14,14 @@ export type StructuredRequirement = {
   inputMaterials?: string[];
   errorLog?: string;
   reproductionSteps?: string;
+  expectedBehavior?: string;
+  actualBehavior?: string;
   userFlow?: string;
+  uiStates?: string[];
   behaviors?: string;
+  testTarget?: string;
+  testType?: string;
+  testFramework?: string;
   reviewScope?: string;
   reviewFocus?: string[];
   apiContract?: string;
@@ -73,8 +79,14 @@ export function createRequirementSession(input: {
     inputMaterials: normalizeList(get("inputMaterials") ?? get("l2-related-files")),
     errorLog: text("errorLog") ?? text("bugfix-error-log"),
     reproductionSteps: text("reproductionSteps") ?? text("bugfix-repro"),
+    expectedBehavior: text("expectedBehavior") ?? text("bugfix-expected"),
+    actualBehavior: text("actualBehavior") ?? text("bugfix-actual"),
     userFlow: text("userFlow") ?? text("feature-user-flow"),
+    uiStates: normalizeList(get("uiStates") ?? get("feature-edge-states") ?? get("frontend-states")),
     behaviors: text("behaviors") ?? text("test-behaviors"),
+    testTarget: text("testTarget") ?? text("test-target"),
+    testType: text("testType") ?? text("test-type"),
+    testFramework: text("testFramework") ?? text("test-framework"),
     reviewScope: text("reviewScope") ?? text("review-scope"),
     reviewFocus: normalizeList(get("reviewFocus") ?? get("review-focus")),
     apiContract: text("apiContract") ?? text("api-contract"),
@@ -101,8 +113,14 @@ export function requirementToText(requirement: StructuredRequirement): string {
     requirement.inputMaterials?.join("\n"),
     requirement.errorLog,
     requirement.reproductionSteps,
+    requirement.expectedBehavior,
+    requirement.actualBehavior,
     requirement.userFlow,
+    requirement.uiStates?.join("\n"),
     requirement.behaviors,
+    requirement.testTarget,
+    requirement.testType,
+    requirement.testFramework,
     requirement.reviewScope,
     requirement.reviewFocus?.join("\n"),
     requirement.apiContract,

@@ -4,7 +4,8 @@ title: Feature request without acceptance criteria
 user_request: "帮我让 Codex 做一个导出按钮。"
 expected_primary_branch: coding-feature-development
 expected_auxiliary_branches: [cli-agent]
-required_missing_inputs: [working_directory, feature_goal, user_flow, output_format, acceptance_criteria, verification_steps]
+required_missing_inputs:
+  [working_directory, feature_goal, user_flow, output_format, acceptance_criteria, verification_steps]
 risk_level: medium
 expected_prompt_features:
   - marks missing acceptance criteria

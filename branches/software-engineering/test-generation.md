@@ -9,20 +9,24 @@
 ## 2. Trigger Conditions
 
 明确命中：
+
 - 用户要求写测试、补测试、提升覆盖率。
 - bugfix 后需要回归测试。
 - 用户要求单元、集成、E2E、快照或端到端验证。
 
 可能命中：
+
 - 用户要求验收新功能，测试生成作为辅助分支。
 - 用户要求构建质量门禁。
 
 不应命中：
+
 - 用户只要修复当前错误，主分支是 `bugfix-debugging`。
 - 用户要实现功能，主分支是 `coding-feature-development`。
 - 用户只要测试计划但不生成测试，可作为计划输出而不是代码修改。
 
 相似分支区别：
+
 - `bugfix-debugging` 修复失败，测试是验证辅助。
 - `code-review` 找缺陷，测试可作为建议。
 - `devops-ci` 把测试接入 pipeline。
@@ -30,6 +34,7 @@
 ## 3. Required Inputs
 
 必需输入：
+
 - `{{working_directory}}` 工作目录。
 - `{{test_target}}` 被测对象：函数、组件、接口、流程或 bug。
 - `{{behaviors}}` 需要覆盖的行为。
@@ -38,12 +43,14 @@
 - `{{test_command}}` 测试命令。
 
 可选输入：
+
 - `{{fixtures}}` fixture、mock、测试数据。
 - `{{coverage_goal}}` 覆盖目标。
 - `{{existing_tests}}` 现有测试路径。
 - `{{edge_cases}}` 边界条件。
 
 缺失时处理：
+
 - 测试框架未知：让 agent 读取配置和现有测试风格。
 - 测试命令未知：让 agent 从 package/pyproject/Cargo 等配置识别并报告。
 - 行为列表缺失：先从用户目标和源码提取关键行为，标注假设。
@@ -94,12 +101,12 @@ fixture/mock 说明：
 
 ## 8. Common Mistakes
 
-| Common Mistake | Risk | Repair |
-| --- | --- | --- |
-| 只测 happy path | 缺少缺陷保护 | 列出异常、边界和回归路径 |
-| 断言内部实现细节 | 重构时测试易碎 | 断言公开行为、输出、状态或 API 契约 |
-| 只写快照或浅层 smoke test | 覆盖表面 | 明确关键断言和失败条件 |
-| 不运行测试 | 不知道是否可用 | 要求执行命令或说明无法运行原因 |
+| Common Mistake            | Risk           | Repair                              |
+| ------------------------- | -------------- | ----------------------------------- |
+| 只测 happy path           | 缺少缺陷保护   | 列出异常、边界和回归路径            |
+| 断言内部实现细节          | 重构时测试易碎 | 断言公开行为、输出、状态或 API 契约 |
+| 只写快照或浅层 smoke test | 覆盖表面       | 明确关键断言和失败条件              |
+| 不运行测试                | 不知道是否可用 | 要求执行命令或说明无法运行原因      |
 
 ## 9. Reusable Template
 
@@ -137,6 +144,7 @@ fixture/mock 说明：
 ```
 
 路由判断：
+
 - 主分支：`software-engineering/test-generation`
 - 辅助分支：`software-engineering/cli-agent`
 - 风险等级：Medium
@@ -148,6 +156,7 @@ fixture/mock 说明：
 ```
 
 质量检查结果：
+
 - [x] 明确测试层级和行为。
 - [x] 覆盖正常、异常和边界。
 - [x] 禁止表面测试和弱化断言。

@@ -24,20 +24,20 @@
 
 ## 3. Primary Scenario Selection
 
-| 用户最终想得到的交付物 | 主场景 | 资源 |
-|---|---|---|
-| 新功能、页面、组件、接口或交互逻辑 | `feature-development` | `branches/software-engineering/coding-feature-development.md` |
-| 修复报错、构建失败、测试失败、页面白屏、CLI 错误 | `bugfix-debugging` | `branches/software-engineering/bugfix-debugging.md` |
-| 保持行为不变的结构整理、模块拆分、架构改造 | `refactor-architecture` | `branches/software-engineering/refactor-architecture.md` |
-| 单元、集成、E2E、回归测试或覆盖率补强 | `test-generation` | `branches/software-engineering/test-generation.md` |
-| PR/diff/文件审查，输出 findings | `code-review` | `branches/software-engineering/code-review.md` |
-| 只读理解仓库结构、技术栈、入口和风险 | `repository-analysis` | `branches/software-engineering/repository-analysis.md` |
-| REST、GraphQL、gRPC、OpenAPI、接口契约 | `api-design` | `branches/software-engineering/api-design.md` |
-| schema/data migration、备份、回滚、staging 验证 | `database-migration` | `branches/software-engineering/database-migration.md` |
-| CI/CD、构建、部署、runner、secrets、回滚 | `devops-ci` | `branches/software-engineering/devops-ci.md` |
-| 算法题、复杂度、边界用例、数据结构 | `algorithm-problem-solving` | `src/domain/question-tree.ts` |
-| 前端页面、组件状态、响应式、可访问性 | `frontend-implementation` | `branches/software-engineering/coding-feature-development.md` |
-| 后端接口、业务规则、鉴权、校验、数据读写 | `backend-implementation` | `branches/software-engineering/coding-feature-development.md` |
+| 用户最终想得到的交付物                           | 主场景                      | 资源                                                          |
+| ------------------------------------------------ | --------------------------- | ------------------------------------------------------------- |
+| 新功能、页面、组件、接口或交互逻辑               | `feature-development`       | `branches/software-engineering/coding-feature-development.md` |
+| 修复报错、构建失败、测试失败、页面白屏、CLI 错误 | `bugfix-debugging`          | `branches/software-engineering/bugfix-debugging.md`           |
+| 保持行为不变的结构整理、模块拆分、架构改造       | `refactor-architecture`     | `branches/software-engineering/refactor-architecture.md`      |
+| 单元、集成、E2E、回归测试或覆盖率补强            | `test-generation`           | `branches/software-engineering/test-generation.md`            |
+| PR/diff/文件审查，输出 findings                  | `code-review`               | `branches/software-engineering/code-review.md`                |
+| 只读理解仓库结构、技术栈、入口和风险             | `repository-analysis`       | `branches/software-engineering/repository-analysis.md`        |
+| REST、GraphQL、gRPC、OpenAPI、接口契约           | `api-design`                | `branches/software-engineering/api-design.md`                 |
+| schema/data migration、备份、回滚、staging 验证  | `database-migration`        | `branches/software-engineering/database-migration.md`         |
+| CI/CD、构建、部署、runner、secrets、回滚         | `devops-ci`                 | `branches/software-engineering/devops-ci.md`                  |
+| 算法题、复杂度、边界用例、数据结构               | `algorithm-problem-solving` | `src/domain/question-tree.ts`                                 |
+| 前端页面、组件状态、响应式、可访问性             | `frontend-implementation`   | `branches/software-engineering/coding-feature-development.md` |
+| 后端接口、业务规则、鉴权、校验、数据读写         | `backend-implementation`    | `branches/software-engineering/coding-feature-development.md` |
 
 ## 3.1 Retained Branch File Index
 
@@ -57,14 +57,14 @@
 
 ## 4. Target Tool Adapter Selection
 
-| 目标工具 | Adapter |
-|---|---|
-| Codex | `@adapter://codex` |
-| Codex CLI | `@adapter://codex-cli` |
-| Claude Code | `@adapter://claude-code` |
-| Gemini CLI | `@adapter://gemini-cli` |
-| ChatGPT | `@adapter://chatgpt` |
-| 未说明但需要改仓库 | 默认 `@adapter://codex` |
+| 目标工具           | Adapter                  |
+| ------------------ | ------------------------ |
+| Codex              | `@adapter://codex`       |
+| Codex CLI          | `@adapter://codex-cli`   |
+| Claude Code        | `@adapter://claude-code` |
+| Gemini CLI         | `@adapter://gemini-cli`  |
+| ChatGPT            | `@adapter://chatgpt`     |
+| 未说明但需要改仓库 | 默认 `@adapter://codex`  |
 
 ## 5. Level-Based Clarification
 
@@ -78,12 +78,12 @@
 
 ## 6. Missing Input Handling
 
-| 类型 | 处理方式 | 例子 |
-|---|---|---|
-| 可合理假设 | 写入假设并要求 agent 验证 | 未说明测试命令时从配置识别 |
-| 待补充 | 使用 `[待补充: field]` 占位 | 工作目录、相关文件 |
-| 必须追问 | 先问用户再生成最终 prompt | 生产数据库备份状态 |
-| 阻塞 | 不能生成可执行修复 prompt | bugfix 完全没有错误日志或复现信号 |
+| 类型       | 处理方式                    | 例子                              |
+| ---------- | --------------------------- | --------------------------------- |
+| 可合理假设 | 写入假设并要求 agent 验证   | 未说明测试命令时从配置识别        |
+| 待补充     | 使用 `[待补充: field]` 占位 | 工作目录、相关文件                |
+| 必须追问   | 先问用户再生成最终 prompt   | 生产数据库备份状态                |
+| 阻塞       | 不能生成可执行修复 prompt   | bugfix 完全没有错误日志或复现信号 |
 
 ## 7. Resource Selection
 

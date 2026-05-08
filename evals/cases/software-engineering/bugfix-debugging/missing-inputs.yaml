@@ -10,7 +10,8 @@ expected_resources:
   - "@adapter://codex"
   - "@checklist://information-missing"
   - "@eval://software-engineering/bugfix-debugging/missing-inputs"
-required_missing_inputs: [working_directory, error_log, reproduction_steps, expected_behavior, actual_behavior, environment]
+required_missing_inputs:
+  [working_directory, error_log, reproduction_steps, expected_behavior, actual_behavior, environment]
 risk_level: medium
 expected_prompt_features:
   - marks missing error log as blocking or pending

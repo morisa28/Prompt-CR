@@ -7,6 +7,7 @@
 主分支负责用户最终交付物。每次路由只能有一个主分支。
 
 选择主分支时优先问：
+
 - 用户最终想让目标模型产出什么？
 - 交付物是代码修改、测试、仓库报告、PRD、RAG 方案、数据结论、正式报告还是安全边界内的信息整理？
 - 如果只能保留一个分支，哪个分支最能定义任务完成标准？
@@ -16,6 +17,7 @@
 辅助分支用于补充执行环境、风险边界、输出形式、验证方式或上下文处理。辅助分支不应抢占主分支。
 
 常见辅助分支类型：
+
 - 工具适配：`software-engineering/cli-agent`。
 - 验证：`software-engineering/test-generation`。
 - 只读规划：`software-engineering/plan-mode`。
@@ -26,6 +28,7 @@
 ## 3. 何时需要多个分支
 
 出现以下情况时需要组合：
+
 - 用户交付物需要另一个分支定义验证方式。
 - 用户指定目标工具或运行环境。
 - 任务涉及高风险领域。
@@ -39,6 +42,7 @@
 3. 最后用 `common-principles.md` 统一缺失输入、约束优先级、幻觉控制和自检。
 
 辅助分支数量建议：
+
 - 普通任务：0 到 1 个。
 - 中等复杂任务：1 到 2 个。
 - 高风险或跨域任务：最多 3 个，超过 3 个时应拆成多阶段 prompt。
@@ -53,17 +57,17 @@
 
 ## 6. 常见组合模式
 
-| 需求模式 | 主分支 | 辅助分支 |
-| --- | --- | --- |
-| Bugfix + Test Generation + Coding Agent | `bugfix-debugging` | `test-generation`, `cli-agent` |
-| Repository Analysis + Report Writing | `repository-analysis` | `report-writing` |
-| PRD + Development Prompt + Acceptance Criteria | `product-requirements` | `coding-feature-development`, `test-generation` |
-| RAG + Data Governance + Citation | `knowledge-base-rag` | `security-threat-modeling`, `documentation-analysis` |
-| Medical Info + Safety Boundary + Structured Summary | `medical-health-info` | `report-writing` |
-| Legal Summary + Jurisdiction + Risk Checklist | `legal-policy-review` | `documentation-analysis`, `report-writing` |
-| Financial Analysis + Risk Disclosure + Data Assumptions | `finance-investment-analysis` | `data-analysis`, `report-writing` |
-| Security Review + Threat Modeling + Defensive Constraints | `security-threat-modeling` | `code-review`, `cli-agent` |
-| Prompt Improvement + Evaluation + Template Refactoring | `meta-skill-builder` | `prompt-review`, `prompt-template-builder` |
+| 需求模式                                                  | 主分支                        | 辅助分支                                             |
+| --------------------------------------------------------- | ----------------------------- | ---------------------------------------------------- |
+| Bugfix + Test Generation + Coding Agent                   | `bugfix-debugging`            | `test-generation`, `cli-agent`                       |
+| Repository Analysis + Report Writing                      | `repository-analysis`         | `report-writing`                                     |
+| PRD + Development Prompt + Acceptance Criteria            | `product-requirements`        | `coding-feature-development`, `test-generation`      |
+| RAG + Data Governance + Citation                          | `knowledge-base-rag`          | `security-threat-modeling`, `documentation-analysis` |
+| Medical Info + Safety Boundary + Structured Summary       | `medical-health-info`         | `report-writing`                                     |
+| Legal Summary + Jurisdiction + Risk Checklist             | `legal-policy-review`         | `documentation-analysis`, `report-writing`           |
+| Financial Analysis + Risk Disclosure + Data Assumptions   | `finance-investment-analysis` | `data-analysis`, `report-writing`                    |
+| Security Review + Threat Modeling + Defensive Constraints | `security-threat-modeling`    | `code-review`, `cli-agent`                           |
+| Prompt Improvement + Evaluation + Template Refactoring    | `meta-skill-builder`          | `prompt-review`, `prompt-template-builder`           |
 
 ## 7. 示例
 
@@ -74,12 +78,14 @@
 ```
 
 路由：
+
 - 主分支：`software-engineering/bugfix-debugging`。
 - 辅助分支：`software-engineering/test-generation`、`software-engineering/cli-agent`、`documents-research/report-writing`。
 - 风险等级：Medium。
 - 缺失输入：完整日志、工作目录、测试命令、环境版本。
 
 构造策略：
+
 - 用 bugfix 分支定义根因分析、最小修复和禁止事项。
 - 用 test-generation 加入回归测试和断言要求。
 - 用 cli-agent 加入命令权限、失败处理和最终报告。

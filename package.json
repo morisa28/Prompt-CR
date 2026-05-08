@@ -5,13 +5,29 @@
   "type": "module",
   "description": "CodePrompt Coach MVP for graded requirement clarification, prompt scoring, prompt generation, and lesson feedback.",
   "scripts": {
-    "demo": "node --experimental-strip-types src/cli/index.ts --demo",
-    "web": "node --experimental-strip-types src/web/server.ts",
-    "test": "node --experimental-strip-types tests/run-tests.ts",
-    "validate": "python scripts/skill_hub_manager.py validate",
+    "dev": "tsx src/cli/index.ts",
+    "demo": "tsx src/cli/index.ts --demo",
+    "web": "tsx src/web/server.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "build": "tsc -p tsconfig.json",
+    "eval": "tsx scripts/run-evals.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "validate": "npm run format:check && npm run lint && npm test && npm run build",
+    "skill:validate": "python scripts/skill_hub_manager.py validate",
     "stats": "python scripts/skill_hub_manager.py stats"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "@types/node": "^22.15.3",
+    "eslint": "^9.26.0",
+    "prettier": "^3.5.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.0"
   }
 }

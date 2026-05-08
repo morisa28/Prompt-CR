@@ -249,11 +249,12 @@ def archived_safety_files(root: Path) -> list[Path]:
 
 def project_files(root: Path) -> list[Path]:
     files: list[Path] = []
+    ignored_dirs = {".git", ".development", "coverage", "dist", "node_modules"}
     for path in sorted(root.rglob("*")):
         if not path.is_file():
             continue
         rel_parts = path.relative_to(root).parts
-        if rel_parts and rel_parts[0] in {".git", ".development"}:
+        if rel_parts and rel_parts[0] in ignored_dirs:
             continue
         files.append(path)
     return files

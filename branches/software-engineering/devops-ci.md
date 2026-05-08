@@ -1,14 +1,17 @@
 # DevOps CI
 
 ## 1. Purpose
+
 用于为 CI/CD pipeline、GitHub Actions、GitLab CI、Docker 构建、自动化部署、构建失败排查、环境变量配置、生产部署前检查、回滚策略和多环境发布流程生成强执行 prompt。本分支关注交付链路、权限边界和部署风险；普通代码报错仍可组合 `bugfix-debugging` 分支。
 
 ## 2. Trigger Conditions
+
 - 用户提到 CI/CD、pipeline、GitHub Actions、GitLab CI、runner、build failed、deploy failed。
 - 用户要求设计 Docker build、自动化部署、多环境发布、生产部署检查或回滚策略。
 - 用户要求修复 CI 构建失败、环境变量配置、secrets 权限、缓存或依赖安装问题。
 
 ## 3. Required Inputs
+
 - {{repository_path}} 仓库路径。
 - {{ci_platform}} CI 平台，例如 GitHub Actions、GitLab CI、CircleCI。
 - {{deployment_target}} 部署目标，例如 staging、production、Vercel、Kubernetes、VM。
@@ -20,11 +23,13 @@
 - {{rollback_requirement}} 回滚要求和 RTO/RPO 约束。
 
 缺失信息处理：
+
 - CI 平台未知时，要求先读取 `.github/workflows/`、`.gitlab-ci.yml`、Dockerfile、compose、部署脚本和 package 配置。
 - 环境变量未知时只列变量名、来源和配置位置，禁止要求用户粘贴真实 secrets。
 - 涉及 production 时默认先生成方案和风险说明，不直接修改生产配置或执行部署。
 
 ## 4. Prompt Construction Rules
+
 - 必须先读取现有 CI 配置文件、Dockerfile、部署脚本、依赖配置和测试配置。
 - 必须识别 package manager、构建工具、测试工具、runner 环境和缓存策略。
 - 必须区分本地构建失败、CI 环境失败、权限失败、secret 缺失、网络/镜像失败和部署目标失败。
@@ -34,6 +39,7 @@
 - 涉及生产环境时必须要求风险说明、发布窗口、回滚方案和验证检查点。
 
 ## 5. Hard Constraints
+
 - 禁止在 prompt 中写入真实密钥、token、私钥、连接串或账号密码。
 - 禁止直接改 production 配置或执行部署，除非用户明确授权。
 - 禁止删除安全检查、测试步骤或审批步骤来让 pipeline 变绿。
@@ -41,7 +47,9 @@
 - 必须包含 pipeline 验证方式和回滚方案。
 
 ## 6. Output Format
+
 最终 prompt 应要求目标模型输出：
+
 - CI 现状和失败分类。
 - 读取的配置文件和证据。
 - 修改文件清单。
@@ -51,6 +59,7 @@
 - 验证步骤和最终报告。
 
 ## 7. Quality Checklist
+
 - [ ] CI 平台和部署目标已明确。
 - [ ] 现有 CI、Docker、部署和依赖配置被要求先读取。
 - [ ] 构建命令和测试命令明确或要求从配置识别。
@@ -61,15 +70,17 @@
 - [ ] 包含 pipeline 验证和回滚方案。
 
 ## 8. Common Mistakes
-| Common Mistake | Risk | Repair |
-| --- | --- | --- |
-| 在 prompt 中写真实密钥 | 密钥泄露 | 只写变量名、secret 名称和配置位置 |
-| 忽略 CI 与本地环境差异 | 修复无效 | 要求比较 Node/Python 版本、OS、runner、缓存和权限 |
-| 修改 pipeline 但不验证 | 发布链路仍可能失败 | 要求重跑 workflow 或给手动验证命令 |
-| 没有区分 staging 和 production | 误发布或破坏线上 | 分环境写触发条件、审批和回滚 |
-| 忽略 cache、依赖安装、runner 权限 | 间歇性失败 | 检查 cache key、lockfile、install 命令和权限声明 |
+
+| Common Mistake                    | Risk               | Repair                                            |
+| --------------------------------- | ------------------ | ------------------------------------------------- |
+| 在 prompt 中写真实密钥            | 密钥泄露           | 只写变量名、secret 名称和配置位置                 |
+| 忽略 CI 与本地环境差异            | 修复无效           | 要求比较 Node/Python 版本、OS、runner、缓存和权限 |
+| 修改 pipeline 但不验证            | 发布链路仍可能失败 | 要求重跑 workflow 或给手动验证命令                |
+| 没有区分 staging 和 production    | 误发布或破坏线上   | 分环境写触发条件、审批和回滚                      |
+| 忽略 cache、依赖安装、runner 权限 | 间歇性失败         | 检查 cache key、lockfile、install 命令和权限声明  |
 
 ## 9. Reusable Template
+
 ```text
 你是 {{target_ai_tool}}，请处理 DevOps / CI 任务。
 
@@ -101,6 +112,7 @@ CI 现状、失败分类、修改方案、修改文件、secrets/权限处理、
 ```
 
 ## 10. Example
+
 用户原始需求：
 
 ```text

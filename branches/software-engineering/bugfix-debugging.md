@@ -9,20 +9,24 @@
 ## 2. Trigger Conditions
 
 明确命中：
+
 - 用户提供错误日志、堆栈、失败命令或失败测试。
 - `npm run build`、`npm test`、`pytest`、`cargo test`、CI job 等失败。
 - 页面白屏、接口 500、CLI 命令失败、依赖安装失败。
 
 可能命中：
+
 - 用户说“最近改完坏了”“帮我修这个 bug”，但日志不完整。
 - 用户要求修复 CI 构建失败，主分支可为 `devops-ci`，本分支作为辅助。
 
 不应命中：
+
 - 用户要新增功能，使用 `coding-feature-development`。
 - 用户只想理解仓库，使用 `repository-analysis`。
 - 用户只要测试策略，使用 `test-generation`。
 
 相似分支区别：
+
 - `code-review` 找风险但不一定修改。
 - `refactor-architecture` 改结构但不以失败日志为中心。
 - `devops-ci` 以 pipeline、runner、部署环境为中心。
@@ -30,6 +34,7 @@
 ## 3. Required Inputs
 
 必需输入：
+
 - `{{working_directory}}` 工作目录。
 - `{{error_log}}` 完整日志、堆栈或失败断言。
 - `{{reproduction_steps}}` 复现步骤或失败命令。
@@ -38,11 +43,13 @@
 - `{{actual_behavior}}` 实际行为。
 
 可选输入：
+
 - `{{recent_changes}}` 最近改动、PR、diff 或相关提交。
 - `{{related_files}}` 用户怀疑的文件。
 - `{{verification_commands}}` 构建、测试、lint 或手动验证命令。
 
 缺失时处理：
+
 - 日志缺失或不完整：标记为阻塞或要求补充关键栈；可先生成带 `[待补充: error_log]` 的 prompt。
 - 环境未知：可要求 agent 从配置识别，并把版本假设写入报告。
 - 复现步骤未知：必须让 agent 先尝试用失败命令复现，不能直接猜修复。
@@ -96,12 +103,12 @@
 
 ## 8. Common Mistakes
 
-| Common Mistake | Risk | Repair |
-| --- | --- | --- |
-| 看到报错就猜测修改位置 | 修错文件或引入新 bug | 要求先复现、读栈和相关源码，根因必须有证据 |
-| 把 bugfix 写成重构任务 | 改动过大，难以验证 | 明确只修复当前失败路径，其他问题列为后续建议 |
-| 允许删除测试或降低断言 | 掩盖真实缺陷 | 明确禁止，并要求新增或保留回归测试 |
-| 不要求验证命令 | 无法确认修复有效 | 写明原失败命令、相关测试和无法运行时的报告方式 |
+| Common Mistake         | Risk                 | Repair                                         |
+| ---------------------- | -------------------- | ---------------------------------------------- |
+| 看到报错就猜测修改位置 | 修错文件或引入新 bug | 要求先复现、读栈和相关源码，根因必须有证据     |
+| 把 bugfix 写成重构任务 | 改动过大，难以验证   | 明确只修复当前失败路径，其他问题列为后续建议   |
+| 允许删除测试或降低断言 | 掩盖真实缺陷         | 明确禁止，并要求新增或保留回归测试             |
+| 不要求验证命令         | 无法确认修复有效     | 写明原失败命令、相关测试和无法运行时的报告方式 |
 
 ## 9. Reusable Template
 
@@ -159,6 +166,7 @@
 ```
 
 路由判断：
+
 - 主分支：`software-engineering/bugfix-debugging`
 - 辅助分支：`software-engineering/test-generation`, `software-engineering/cli-agent`
 - 风险等级：Medium
@@ -170,6 +178,7 @@
 ```
 
 质量检查结果：
+
 - [x] 包含失败命令和错误日志。
 - [x] 要求根因证据和最小修复。
 - [x] 明确禁止删除测试和无关重构。

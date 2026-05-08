@@ -27,6 +27,45 @@ test("generated prompt includes unrelated-refactor prohibition and verification 
   assert.match(prompt, /不要进行无关重构/);
   assert.match(prompt, /验证命令与结果/);
   assert.match(prompt, /不要虚构验证结果/);
+  assert.match(prompt, /13\. 自检清单/);
+  assert.match(prompt, /未验证项/);
+});
+
+test("generated prompt includes all required base sections", () => {
+  const session = createRequirementSession({
+    scenario: "feature-development",
+    targetTool: "Codex",
+    originalPrompt: "实现收藏功能。",
+    answers: {
+      workingDirectory: "F:/workspace/app",
+      taskGoal: "实现课程收藏功能。",
+      relatedFiles: "src/CourseCard.tsx",
+      userFlow: "用户点击收藏按钮后，按钮状态变为已收藏。",
+      modificationScope: "只修改课程卡片相关文件。",
+      verificationCommands: "npm test -- CourseCard",
+    },
+  });
+  const prompt = generatePrompt(session);
+
+  for (const title of [
+    "1. 角色与目标工具",
+    "2. 工作目录",
+    "3. 任务目标",
+    "4. 项目背景",
+    "5. 相关文件",
+    "6. 已知问题 / 需求细节",
+    "7. 修改范围",
+    "8. 禁止事项",
+    "9. 执行步骤",
+    "10. 验证命令",
+    "11. 输出报告格式",
+    "12. 失败处理规则",
+    "13. 自检清单",
+  ]) {
+    assert.match(prompt, new RegExp(title.replace(".", "\\.")));
+  }
+  assert.match(prompt, /用户故事/);
+  assert.match(prompt, /验收/);
 });
 
 test("reviewer returns high score for generated prompt", () => {

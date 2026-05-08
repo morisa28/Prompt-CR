@@ -20,7 +20,11 @@ flowchart LR
 
 ## Prompt 评分模块
 
-`src/domain/scoring-rubric.ts` 定义 8 个评分维度，总分 100。`src/core/prompt-scorer.ts` 根据结构化字段和关键词证据计算维度得分，并输出扣分原因、缺失信息和 readiness level。
+`src/domain/scoring-rubric.ts` 定义 8 个评分维度，总分 100。`src/core/prompt-scorer.ts` 使用字段证据、关键词证据、内容质量证据和反作弊惩罚计算维度得分，并输出扣分原因、缺失信息、anti-gaming warning、具体证据和 readiness level。
+
+## 动态追问模块
+
+`src/core/question-engine.ts` 提供 `getNextFollowUpQuestions`。系统根据场景、已回答内容和低分维度选择每轮最多 3 个追问，并说明追问原因、示例答案和影响维度。
 
 ## Prompt 生成模块
 
@@ -32,7 +36,7 @@ flowchart LR
 
 ## 错题本模块
 
-`src/core/lesson-engine.ts` 定义 `PromptMistake`，记录原始 prompt、生成 prompt、生成前后分数、低分维度、错误类型和更新建议。
+`src/core/lesson-engine.ts` 定义 `PromptMistake` 和 `MistakeSummary`，记录原始 prompt、生成 prompt、生成前后分数、低分维度、错误类型和更新建议。`src/storage/lesson-store.ts` 将错题落盘到 `data/prompt-mistakes.json`，并提供统计与迭代建议。
 
 ## 数据流
 
@@ -46,7 +50,7 @@ flowchart LR
 ## 未来扩展
 
 - 将问题树配置外置为 JSON/YAML。
-- 增加 Web UI 和评分可视化。
+- 使用真实样本校准评分规则。
 - 接入真实学生使用数据，统计常见缺失维度。
 - 基于错题本自动推荐问题树和模板改动。
 - 提供 CLI/MCP 接口，嵌入 coding agent 工作流。

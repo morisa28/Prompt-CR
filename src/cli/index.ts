@@ -24,7 +24,11 @@ function runDemo(): void {
     },
   });
 
-  const plan = buildQuestionPlan(session.scenario, session.rawAnswers);
+  const plan = buildQuestionPlan(session.scenario, {
+    ...session.rawAnswers,
+    scenario: session.scenario,
+    targetTool: session.targetTool,
+  });
   const before = scorePrompt(session.originalPrompt);
   const generatedPrompt = generatePrompt(session);
   const review = reviewGeneratedPrompt(generatedPrompt);
@@ -38,14 +42,20 @@ function runDemo(): void {
     affectedTemplate: "src/domain/prompt-template.ts",
   });
 
-  console.log(JSON.stringify({
-    missingBlockingQuestions: plan.missingBlockingQuestions.map((question) => question.id),
-    scoreBefore: before.totalScore,
-    scoreAfter: review.score.totalScore,
-    reviewPassed: review.passed,
-    generatedPrompt,
-    mistake: review.weakDimensions.length > 0 ? mistake : null,
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        missingBlockingQuestions: plan.missingBlockingQuestions.map((question) => question.id),
+        scoreBefore: before.totalScore,
+        scoreAfter: review.score.totalScore,
+        reviewPassed: review.passed,
+        generatedPrompt,
+        mistake: review.weakDimensions.length > 0 ? mistake : null,
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 if (process.argv.includes("--demo")) {

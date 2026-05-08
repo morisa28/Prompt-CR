@@ -6,14 +6,7 @@ export type PromptTemplateSections = {
   finalReport: string[];
 };
 
-const baseFinalReport = [
-  "根因或实现思路",
-  "修改文件列表",
-  "关键变更说明",
-  "验证命令与结果",
-  "未验证项",
-  "剩余风险",
-];
+const baseFinalReport = ["根因或实现思路", "修改文件列表", "关键变更说明", "验证命令与结果", "未验证项", "剩余风险"];
 
 export const toolPromptSections: Record<TargetTool, PromptTemplateSections> = {
   Codex: {
