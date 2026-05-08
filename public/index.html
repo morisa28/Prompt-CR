@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CodePrompt Coach</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <h1>CodePrompt Coach</h1>
+          <p>分级澄清、Prompt 评分、生成与自审</p>
+        </div>
+      </div>
+      <div class="status-strip" aria-label="流程状态">
+        <span>需求</span>
+        <span>评分</span>
+        <span>生成</span>
+        <span>自审</span>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel input-panel" aria-labelledby="input-title">
+        <div class="panel-head">
+          <h2 id="input-title">任务输入</h2>
+          <button class="secondary-button" id="load-sample" type="button">加载示例</button>
+        </div>
+
+        <form id="coach-form">
+          <div class="field-grid">
+            <label>
+              场景
+              <select id="scenario" name="scenario" data-testid="scenario-select"></select>
+            </label>
+            <label>
+              目标工具
+              <select id="targetTool" name="targetTool" data-testid="target-tool-select"></select>
+            </label>
+          </div>
+
+          <label>
+            原始需求
+            <textarea id="originalPrompt" name="originalPrompt" rows="4" data-testid="original-prompt" placeholder="例如：帮我让 Codex 修复 npm run build 报错，不要乱改。"></textarea>
+          </label>
+
+          <div id="question-groups" class="question-groups" data-testid="question-groups"></div>
+
+          <button class="primary-button" type="submit" data-testid="evaluate-button">生成 Prompt</button>
+        </form>
+      </section>
+
+      <section class="panel output-panel" aria-labelledby="output-title">
+        <div class="panel-head">
+          <h2 id="output-title">最终 Prompt</h2>
+          <button class="secondary-button" id="copy-prompt" type="button" disabled>复制</button>
+        </div>
+        <div id="requirement-summary" class="summary-grid empty-state">
+          等待生成结果
+        </div>
+        <textarea id="generatedPrompt" class="prompt-output" rows="22" readonly data-testid="generated-prompt"></textarea>
+      </section>
+
+      <aside class="panel score-panel" aria-labelledby="score-title">
+        <div class="panel-head">
+          <h2 id="score-title">评分与错题</h2>
+          <span id="review-badge" class="badge">未生成</span>
+        </div>
+
+        <div class="score-stack">
+          <div class="score-card">
+            <h3>原始需求</h3>
+            <div id="original-score" class="score-meter" data-testid="original-score">--</div>
+          </div>
+          <div class="score-card">
+            <h3>结构化后</h3>
+            <div id="structured-score" class="score-meter" data-testid="structured-score">--</div>
+          </div>
+          <div class="score-card">
+            <h3>生成后自审</h3>
+            <div id="generated-score" class="score-meter" data-testid="generated-score">--</div>
+          </div>
+        </div>
+
+        <div id="dimension-scores" class="dimension-list"></div>
+        <div id="missing-info" class="feedback-block"></div>
+        <div id="lesson-record" class="feedback-block"></div>
+      </aside>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

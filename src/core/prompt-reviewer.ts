@@ -1,10 +1,10 @@
-import { scoringRubric } from "../domain/scoring-rubric.ts";
+import { scoringRubric, type ScoringDimension } from "../domain/scoring-rubric.ts";
 import { scorePrompt, type PromptScoreReport } from "./prompt-scorer.ts";
 
 export type PromptReviewResult = {
   score: PromptScoreReport;
   passed: boolean;
-  weakDimensions: string[];
+  weakDimensions: ScoringDimension[];
   revisionHints: string[];
 };
 

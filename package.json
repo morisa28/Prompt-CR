@@ -6,6 +6,7 @@
   "description": "CodePrompt Coach MVP for graded requirement clarification, prompt scoring, prompt generation, and lesson feedback.",
   "scripts": {
     "demo": "node --experimental-strip-types src/cli/index.ts --demo",
+    "web": "node --experimental-strip-types src/web/server.ts",
     "test": "node --experimental-strip-types tests/run-tests.ts",
     "validate": "python scripts/skill_hub_manager.py validate",
     "stats": "python scripts/skill_hub_manager.py stats"
