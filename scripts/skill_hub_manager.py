@@ -46,7 +46,6 @@ ROOT_FILES = [
     "evals/schema.md",
     "lessons/README.md",
     "adapters/README.md",
-    "safety/README.md",
 ]
 
 REQUIRED_EVAL_FIELDS = [
@@ -241,6 +240,13 @@ def safety_files(root: Path) -> list[Path]:
     return sorted(path for path in safety.rglob("*.md"))
 
 
+def archived_safety_files(root: Path) -> list[Path]:
+    safety = root / "legacy" / "archived-general-domains" / "safety"
+    if not safety.is_dir():
+        return []
+    return sorted(path for path in safety.rglob("*.md"))
+
+
 def project_files(root: Path) -> list[Path]:
     files: list[Path] = []
     for path in sorted(root.rglob("*")):
@@ -374,7 +380,7 @@ def validate(root: Path) -> ValidationResult:
         for rel_path in re.findall(r"path:\s*\"?([^\"\s]+)\"?", registry):
             if not (root / rel_path).is_file():
                 errors.append(f"Resource registry references missing path: {rel_path}")
-        for required_type in ["branch", "template", "checklist", "example", "eval", "adapter", "safety", "lesson"]:
+        for required_type in ["branch", "template", "checklist", "example", "eval", "adapter", "lesson"]:
             if f"- {required_type}" not in registry and f"{required_type}s:" not in registry:
                 warnings.append(f"Resource registry may be missing resource type: {required_type}")
     else:
@@ -433,8 +439,8 @@ def validate(root: Path) -> ValidationResult:
 
     if len(adapter_files(root)) < 6:
         errors.append("Expected adapters/README.md plus major target tool adapters")
-    if len(safety_files(root)) < 6:
-        errors.append("Expected safety/README.md plus major high-risk boundary files")
+    if not archived_safety_files(root):
+        warnings.append("Archived safety files not found under legacy/archived-general-domains/safety")
 
     for path in [root / rel for rel in ROOT_FILES if (root / rel).exists()] + branch_files(root):
         text = read_text(path)

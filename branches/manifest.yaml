@@ -1,23 +1,85 @@
-version: 1
-description: Lightweight branch manifest for routing, coverage checks, future CLI/Web UI, and eval indexing.
+version: 2
+description: "CodePrompt Coach MVP branch manifest for software engineering prompt clarification and generation."
 
 branches:
   - id: software-engineering.bugfix-debugging
     title: Bugfix & Debugging
     category: software-engineering
     path: branches/software-engineering/bugfix-debugging.md
-    purpose: Fix or diagnose software errors with minimal safe changes.
+    purpose: Fix or diagnose software failures with root-cause analysis, minimal safe changes, and verification.
     primary_triggers: [error log, failing test, build failure, runtime exception, CLI error]
     negative_triggers: [new feature from scratch, broad architecture rewrite, read-only repo analysis]
     required_inputs: [working_directory, error_log, reproduction_steps, environment, expected_behavior, actual_behavior]
     optional_inputs: [recent_changes, related_files, verification_commands]
     compatible_auxiliary_branches: [software-engineering.test-generation, software-engineering.cli-agent, software-engineering.repository-analysis]
     risk_level_default: medium
-    output_sections: [root cause, evidence, changed files, key changes, verification commands, remaining risks]
+    output_sections: [root_cause, evidence, changed_files, key_changes, verification_commands, remaining_risks]
     eval_cases:
       - evals/cases/software-engineering/bugfix-debugging/basic.yaml
       - evals/cases/software-engineering/bugfix-debugging/missing-inputs.yaml
       - evals/cases/software-engineering/bugfix-debugging/unsafe-shortcut.yaml
+
+  - id: software-engineering.coding-feature-development
+    title: Coding Feature Development
+    category: software-engineering
+    path: branches/software-engineering/coding-feature-development.md
+    purpose: Convert feature goals into executable coding-agent prompts.
+    primary_triggers: [new feature, UI component, API implementation, interaction logic]
+    negative_triggers: [specific error log, read-only analysis, pure review]
+    required_inputs: [working_directory, feature_goal, user_flow, acceptance_criteria, modification_scope, verification_steps]
+    optional_inputs: [tech_stack, related_files, design_assets, api_contract, non_goals]
+    compatible_auxiliary_branches: [software-engineering.test-generation, software-engineering.cli-agent, software-engineering.api-design]
+    risk_level_default: medium
+    output_sections: [implementation_plan, changed_files, key_logic, user_flow_coverage, verification, risks]
+    eval_cases:
+      - evals/cases/software-engineering/coding-feature-development/basic.yaml
+      - evals/cases/software-engineering/coding-feature-development/missing-acceptance.yaml
+      - evals/cases/software-engineering/coding-feature-development/scope-creep-risk.yaml
+
+  - id: software-engineering.refactor-architecture
+    title: Refactor Architecture
+    category: software-engineering
+    path: branches/software-engineering/refactor-architecture.md
+    purpose: Improve structure while preserving external behavior.
+    primary_triggers: [refactor, architecture cleanup, module split, reduce coupling]
+    negative_triggers: [new behavior, specific error log, read-only analysis]
+    required_inputs: [working_directory, refactor_goal, behavior_to_preserve, allowed_scope, regression_tests]
+    optional_inputs: [risk_focus, rollout_plan]
+    compatible_auxiliary_branches: [software-engineering.test-generation, software-engineering.repository-analysis]
+    risk_level_default: medium
+    output_sections: [scope_table, refactor_plan, behavior_preservation, regression_tests, risks]
+    eval_cases: []
+
+  - id: software-engineering.test-generation
+    title: Test Generation
+    category: software-engineering
+    path: branches/software-engineering/test-generation.md
+    purpose: Generate runnable behavior-focused tests.
+    primary_triggers: [write tests, coverage, regression tests, e2e tests]
+    negative_triggers: [delete tests, only fix bug, implementation from scratch]
+    required_inputs: [working_directory, test_target, behaviors, test_level, test_framework, test_command]
+    optional_inputs: [fixtures, coverage_goal, existing_tests, edge_cases]
+    compatible_auxiliary_branches: [software-engineering.bugfix-debugging, software-engineering.coding-feature-development]
+    risk_level_default: medium
+    output_sections: [test_strategy, coverage_table, test_files, fixtures, command_results, uncovered_cases]
+    eval_cases:
+      - evals/cases/software-engineering/test-generation/basic.yaml
+      - evals/cases/software-engineering/test-generation/missing-framework.yaml
+      - evals/cases/software-engineering/test-generation/surface-tests-risk.yaml
+
+  - id: software-engineering.code-review
+    title: Code Review
+    category: software-engineering
+    path: branches/software-engineering/code-review.md
+    purpose: Produce location-specific review findings ordered by severity.
+    primary_triggers: [code review, review PR, inspect diff, find bugs]
+    negative_triggers: [direct implementation, pure repository onboarding]
+    required_inputs: [working_directory, review_scope, diff_or_files, review_focus]
+    optional_inputs: [severity_scale, test_commands]
+    compatible_auxiliary_branches: [software-engineering.test-generation, software-engineering.security-threat-modeling]
+    risk_level_default: medium
+    output_sections: [findings, open_questions, test_gaps, summary]
+    eval_cases: []
 
   - id: software-engineering.repository-analysis
     title: Repository Analysis
@@ -28,180 +90,108 @@ branches:
     negative_triggers: [fix bug, implement feature, edit files]
     required_inputs: [working_directory, analysis_goal, focus_areas, output_depth]
     optional_inputs: [excluded_paths, known_questions, report_audience, time_budget]
-    compatible_auxiliary_branches: [documents-research.report-writing, software-engineering.cli-agent]
+    compatible_auxiliary_branches: [software-engineering.cli-agent]
     risk_level_default: medium
-    output_sections: [overview, read scope, file tree, tech stack evidence, modules, data flow, risks, recommendations]
+    output_sections: [overview, read_scope, file_tree, tech_stack_evidence, modules, data_flow, risks, recommendations]
     eval_cases:
       - evals/cases/software-engineering/repository-analysis/basic.yaml
       - evals/cases/software-engineering/repository-analysis/missing-scope.yaml
       - evals/cases/software-engineering/repository-analysis/no-edit-boundary.yaml
 
-  - id: software-engineering.coding-feature-development
-    title: Coding Feature Development
+  - id: software-engineering.api-design
+    title: API Design
     category: software-engineering
-    path: branches/software-engineering/coding-feature-development.md
-    purpose: Convert feature goals into executable coding-agent prompts.
-    primary_triggers: [new feature, UI component, API implementation, interaction logic]
-    negative_triggers: [specific error log, read-only analysis, pure PRD]
-    required_inputs: [working_directory, feature_goal, user_flow, acceptance_criteria, modification_scope, verification_steps]
-    optional_inputs: [tech_stack, related_files, design_assets, api_contract, non_goals]
-    compatible_auxiliary_branches: [software-engineering.test-generation, software-engineering.cli-agent, product-design-business.product-requirements]
+    path: branches/software-engineering/api-design.md
+    purpose: Design API contracts, auth, errors, pagination, examples, and test scenarios.
+    primary_triggers: [REST API, GraphQL, gRPC, OpenAPI, endpoint, request response]
+    negative_triggers: [pure implementation without contract, marketing content]
+    required_inputs: [api_goal, api_style, consumer, resource_model, auth_method, request_fields, response_fields, error_cases]
+    optional_inputs: [versioning_requirement, rate_limit_requirement, openapi_required]
+    compatible_auxiliary_branches: [software-engineering.coding-feature-development, software-engineering.test-generation]
     risk_level_default: medium
-    output_sections: [implementation plan, changed files, key logic, user flow coverage, verification, risks]
-    eval_cases:
-      - evals/cases/software-engineering/coding-feature-development/basic.yaml
-      - evals/cases/software-engineering/coding-feature-development/missing-acceptance.yaml
-      - evals/cases/software-engineering/coding-feature-development/scope-creep-risk.yaml
+    output_sections: [api_goal, resources, schemas, auth, errors, examples, tests]
+    eval_cases: []
 
-  - id: software-engineering.test-generation
-    title: Test Generation
+  - id: software-engineering.database-migration
+    title: Database Migration
     category: software-engineering
-    path: branches/software-engineering/test-generation.md
-    purpose: Generate runnable, behavior-focused unit, integration, e2e, or regression tests.
-    primary_triggers: [write tests, coverage, regression tests, e2e tests]
-    negative_triggers: [delete tests, only fix bug, implementation from scratch]
-    required_inputs: [working_directory, test_target, behaviors, test_level, test_framework, test_command]
-    optional_inputs: [fixtures, coverage_goal, existing_tests, edge_cases]
-    compatible_auxiliary_branches: [software-engineering.bugfix-debugging, software-engineering.cli-agent, software-engineering.coding-feature-development]
+    path: branches/software-engineering/database-migration.md
+    purpose: Plan schema/data migrations with backup, rollback, compatibility, and staging validation.
+    primary_triggers: [database migration, schema change, ORM migration, rollback, backfill]
+    negative_triggers: [no database change, pure API design]
+    required_inputs: [database_type, migration_tool, current_schema, target_schema, backup_status, rollback_plan]
+    optional_inputs: [data_volume, affected_tables, affected_services, downtime_tolerance]
+    compatible_auxiliary_branches: [software-engineering.test-generation, software-engineering.devops-ci]
     risk_level_default: medium
-    output_sections: [test strategy, test level, coverage table, test files, fixtures, command results, uncovered cases]
-    eval_cases:
-      - evals/cases/software-engineering/test-generation/basic.yaml
-      - evals/cases/software-engineering/test-generation/missing-framework.yaml
-      - evals/cases/software-engineering/test-generation/surface-tests-risk.yaml
+    output_sections: [schema_summary, destructive_changes, migration_plan, rollback, validation, risks]
+    eval_cases: []
 
-  - id: product-design-business.product-requirements
-    title: Product Requirements
-    category: product-design-business
-    path: branches/product-design-business/product-requirements.md
-    purpose: Convert product ideas into PRDs, user stories, acceptance criteria, and dev-agent prompts.
-    primary_triggers: [PRD, MVP, product requirements, user stories, acceptance criteria]
-    negative_triggers: [pure code implementation, marketing copy, broad business strategy]
-    required_inputs: [product_goal, target_users, user_scenarios, problem_statement, mvp_scope, non_goals, success_metrics]
-    optional_inputs: [business_constraints, technical_context, stakeholders, release_plan]
-    compatible_auxiliary_branches: [software-engineering.coding-feature-development, software-engineering.test-generation, ai-systems.knowledge-base-rag]
+  - id: software-engineering.devops-ci
+    title: DevOps CI
+    category: software-engineering
+    path: branches/software-engineering/devops-ci.md
+    purpose: Handle CI/CD, builds, deployment, runner, secrets, cache, and rollback prompts.
+    primary_triggers: [CI, CD, GitHub Actions, Docker build, deploy failed, runner]
+    negative_triggers: [local code bug only, no pipeline context]
+    required_inputs: [repository_path, ci_platform, deployment_target, build_command, test_command, current_error_log]
+    optional_inputs: [environment_variables, branch_strategy, rollback_requirement]
+    compatible_auxiliary_branches: [software-engineering.bugfix-debugging, software-engineering.test-generation]
     risk_level_default: medium
-    output_sections: [background, users, goals, non-goals, MVP, stories, acceptance criteria, metrics, dev prompt]
-    eval_cases:
-      - evals/cases/product-design-business/product-requirements/basic.yaml
-      - evals/cases/product-design-business/product-requirements/ambiguous-stakeholders.yaml
-      - evals/cases/product-design-business/product-requirements/dev-agent-output.yaml
+    output_sections: [ci_status, evidence, changed_files, secrets_handling, validation, rollback, risks]
+    eval_cases: []
 
-  - id: ai-systems.knowledge-base-rag
-    title: Knowledge Base RAG
-    category: ai-systems
-    path: branches/ai-systems/knowledge-base-rag.md
-    purpose: Design RAG prompts with sources, chunking, retrieval, citations, permissions, updates, and evals.
-    primary_triggers: [RAG, knowledge base, vector database, embedding, retrieval, citation]
-    negative_triggers: [single document summary, no knowledge source, generic chatbot]
-    required_inputs: [knowledge_sources, document_types, target_users, qa_scope, citation_requirement, access_control, freshness_requirement, evaluation_questions]
-    optional_inputs: [chunking_strategy, metadata_schema, embedding_model, vector_database, retrieval_strategy, reranking_strategy]
-    compatible_auxiliary_branches: [software-engineering.security-threat-modeling, documents-research.documentation-analysis, software-engineering.api-design]
-    risk_level_default: high
-    output_sections: [scope, index fields, chunking, retrieval, citation rules, permissions, update strategy, evaluation metrics]
-    eval_cases:
-      - evals/cases/ai-systems/knowledge-base-rag/basic.yaml
-      - evals/cases/ai-systems/knowledge-base-rag/no-citation-risk.yaml
-      - evals/cases/ai-systems/knowledge-base-rag/permission-control.yaml
-
-  - id: data-analytics.data-analysis
-    title: Data Analysis
-    category: data-analytics
-    path: branches/data-analytics/data-analysis.md
-    purpose: Generate reproducible data analysis prompts with data quality, metrics, visualization, and uncertainty.
-    primary_triggers: [data analysis, trend, anomaly, metrics, experiment, dataset]
-    negative_triggers: [no data source, pure report writing, investment advice without safety boundary]
-    required_inputs: [data_source, analysis_questions, field_definitions, metric_definitions, time_range, deliverable]
-    optional_inputs: [cleaning_rules, method_constraints, visualization_requirements, audience, privacy_rules]
-    compatible_auxiliary_branches: [data-analytics.visualization-dashboard, documents-research.report-writing, domain-specific.finance-investment-analysis]
+  - id: software-engineering.security-threat-modeling
+    title: Security Threat Modeling
+    category: software-engineering
+    path: branches/software-engineering/security-threat-modeling.md
+    purpose: Generate defensive security review and threat modeling prompts.
+    primary_triggers: [security review, threat model, auth audit, data leakage, permission]
+    negative_triggers: [attack payload, exploit chain, bypass, persistence]
+    required_inputs: [system_scope, assets, actors, trust_boundaries, entry_points, authorization_status]
+    optional_inputs: [security_controls, compliance_requirements, logging_audit]
+    compatible_auxiliary_branches: [software-engineering.code-review, software-engineering.api-design]
     risk_level_default: medium
-    output_sections: [data source, data dictionary, quality checks, cleaning rules, metrics, method, results, charts, limitations]
-    eval_cases:
-      - evals/cases/data-analytics/data-analysis/basic.yaml
-      - evals/cases/data-analytics/data-analysis/missing-fields.yaml
-      - evals/cases/data-analytics/data-analysis/causality-risk.yaml
+    output_sections: [scope, assets, boundaries, risks, mitigations, validation]
+    eval_cases: []
 
-  - id: documents-research.report-writing
-    title: Report Writing
-    category: documents-research
-    path: branches/documents-research/report-writing.md
-    purpose: Turn factual materials into audience-specific reports with evidence and action recommendations.
-    primary_triggers: [project report, formal report, stage summary, technical document]
-    negative_triggers: [no source material, final legal advice, medical diagnosis, marketing copy]
-    required_inputs: [report_goal, audience, materials, report_type, length, tone]
-    optional_inputs: [citation_style, decision_context, action_requirements, appendix_materials]
-    compatible_auxiliary_branches: [documents-research.documentation-analysis, data-analytics.data-analysis, software-engineering.repository-analysis]
+  - id: software-engineering.algorithm-problem-solving
+    title: Algorithm Problem Solving
+    category: software-engineering
+    path: branches/software-engineering/algorithm-problem-solving.md
+    purpose: Clarify algorithm tasks with input/output, constraints, complexity, edge cases, and verification.
+    primary_triggers: [algorithm, data structure, coding interview, complexity, edge cases]
+    negative_triggers: [repository modification, UI implementation]
+    required_inputs: [problem_statement, input_format, output_format, constraints, examples, target_language]
+    optional_inputs: [verification_cases, proof_style]
+    compatible_auxiliary_branches: [software-engineering.test-generation]
     risk_level_default: low
-    output_sections: [title, executive summary, sources, body, evidence, conclusion, risks, actions, gaps]
-    eval_cases:
-      - evals/cases/documents-research/report-writing/basic.yaml
-      - evals/cases/documents-research/report-writing/missing-materials.yaml
-      - evals/cases/documents-research/report-writing/high-risk-boundary.yaml
+    output_sections: [problem_restatement, constraints, algorithm, proof, complexity, code, tests, risks]
+    eval_cases: []
 
-  - id: domain-specific.medical-health-info
-    title: Medical Health Info
-    category: domain-specific
-    path: branches/domain-specific/medical-health-info.md
-    purpose: Organize health information safely without diagnosis, prescription, or replacing clinicians.
-    primary_triggers: [symptoms, medical report, doctor visit preparation, health information]
-    negative_triggers: [diagnosis request, prescription request, stop medication, emergency triage as final answer]
-    required_inputs: [symptoms, timeline, health_context, medications, medical_records]
-    optional_inputs: [red_flags, doctor_visit_goal, questions_for_doctor]
-    compatible_auxiliary_branches: [documents-research.report-writing]
-    risk_level_default: high
-    output_sections: [safety boundary, red flags, symptom timeline, history, records, doctor questions, missing info]
-    eval_cases:
-      - evals/cases/domain-specific/medical-health-info/symptom-summary.yaml
-      - evals/cases/domain-specific/medical-health-info/emergency-red-flags.yaml
-      - evals/cases/domain-specific/medical-health-info/prescription-boundary.yaml
-
-  - id: domain-specific.legal-policy-review
-    title: Legal Policy Review
-    category: domain-specific
-    path: branches/domain-specific/legal-policy-review.md
-    purpose: Summarize legal/policy text, identify risks, and prepare lawyer questions without legal advice.
-    primary_triggers: [contract risk, legal document, policy review, compliance, privacy policy]
-    negative_triggers: [final legal conclusion, jurisdiction-free advice, missing document text]
-    required_inputs: [jurisdiction, document_type, document_text, transaction_context, risk_focus]
-    optional_inputs: [party_role, negotiation_goals, not_legal_advice_notice]
-    compatible_auxiliary_branches: [documents-research.documentation-analysis, documents-research.report-writing]
-    risk_level_default: high
-    output_sections: [legal boundary, jurisdiction, overview, obligations, risks, negotiation points, lawyer questions]
-    eval_cases:
-      - evals/cases/domain-specific/legal-policy-review/contract-summary.yaml
-      - evals/cases/domain-specific/legal-policy-review/missing-jurisdiction.yaml
-      - evals/cases/domain-specific/legal-policy-review/final-advice-risk.yaml
-
-  - id: domain-specific.finance-investment-analysis
-    title: Finance Investment Analysis
-    category: domain-specific
-    path: branches/domain-specific/finance-investment-analysis.md
-    purpose: Produce informational financial analysis with assumptions, risks, dates, and no personalized advice.
-    primary_triggers: [stock analysis, investment research, financial planning, budget, crypto]
-    negative_triggers: [guaranteed return, direct buy sell order, missing data source]
-    required_inputs: [asset_or_topic, analysis_goal, time_horizon, data_sources, risk_profile, current_date]
-    optional_inputs: [portfolio_context, assumptions, metrics, not_financial_advice_notice]
-    compatible_auxiliary_branches: [data-analytics.data-analysis, documents-research.report-writing]
-    risk_level_default: high
-    output_sections: [disclaimer, data sources, facts, assumptions, metrics, scenarios, risks, data gaps]
-    eval_cases:
-      - evals/cases/domain-specific/finance-investment-analysis/basic.yaml
-      - evals/cases/domain-specific/finance-investment-analysis/missing-current-data.yaml
-      - evals/cases/domain-specific/finance-investment-analysis/buy-sell-risk.yaml
-
-  - id: meta.meta-skill-builder
-    title: Meta Skill Builder
-    category: meta
-    path: branches/meta/meta-skill-builder.md
-    purpose: Design or improve AI skills, prompt hubs, routers, templates, evals, and manifests.
-    primary_triggers: [skill builder, prompt system improvement, router improvement, eval design, manifest]
-    negative_triggers: [single prompt rewrite, generic tutorial, ordinary summary]
-    required_inputs: [source_materials, skill_name, target_users, use_cases, routing_goals, quality_standards, maintenance_rules]
-    optional_inputs: [existing_structure, focus_gaps, eval_requirements, manifest_requirements, output_path]
-    compatible_auxiliary_branches: [general-prompt.prompt-review, general-prompt.prompt-template-builder]
+  - id: software-engineering.cli-agent
+    title: CLI Agent
+    category: software-engineering
+    path: branches/software-engineering/cli-agent.md
+    purpose: Add command-line execution, permissions, command failure handling, and report boundaries.
+    primary_triggers: [Codex CLI, Claude Code, Gemini CLI, command line agent]
+    negative_triggers: [no command execution]
+    required_inputs: [cli_tool, working_directory, allowed_commands, forbidden_actions, network_policy]
+    optional_inputs: [approval_policy, report_format]
+    compatible_auxiliary_branches: [software-engineering.bugfix-debugging, software-engineering.coding-feature-development]
     risk_level_default: medium
-    output_sections: [audit, routing design, branches, templates, checklists, examples, evals, manifest, self-check]
-    eval_cases:
-      - evals/cases/meta/meta-skill-builder/basic.yaml
-      - evals/cases/meta/meta-skill-builder/missing-structure.yaml
-      - evals/cases/meta/meta-skill-builder/abstract-advice-risk.yaml
+    output_sections: [task, command_plan, permission_boundary, failure_handling, final_report]
+    eval_cases: []
+
+  - id: software-engineering.plan-mode
+    title: Plan Mode
+    category: software-engineering
+    path: branches/software-engineering/plan-mode.md
+    purpose: Read, analyze, and plan before file modification.
+    primary_triggers: [plan first, no edits, large refactor, high risk change]
+    negative_triggers: [simple direct edit]
+    required_inputs: [working_directory, task_goal, read_first, risk_focus]
+    optional_inputs: [verification_steps, expected_files]
+    compatible_auxiliary_branches: [software-engineering.repository-analysis]
+    risk_level_default: medium
+    output_sections: [task_understanding, read_files, current_state, risks, staged_plan, verification]
+    eval_cases: []

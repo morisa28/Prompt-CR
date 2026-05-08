@@ -1,421 +1,166 @@
-# Prompt Engineering Skill Hub
+# CodePrompt Coach
 
-一句话定位：把用户的模糊需求路由到合适场景分支，并生成可交给 Codex、Codex CLI、Claude Code、Gemini CLI、ChatGPT 等工具执行的高质量 prompt。
+**CodePrompt Coach：面向代码生成任务的分级需求澄清与 Prompt 质量优化平台。**
 
-## 适用人群
+本项目已从泛领域 Prompt Engineering Skill Hub 收缩为一个“文档 + MVP 原型”的大创项目基础，聚焦软件工程与计算机科学场景。它不把 AI 定位为替用户猜需求的工具，而是通过分级提问、量化评分、prompt 生成、自我审查和错题本反馈，帮助学生与初级开发者把模糊开发想法转化为可交给 Codex、Codex CLI、Claude Code、Gemini CLI、ChatGPT 等 coding agent 执行的高质量任务 prompt。
 
-- 想把口语需求改成强执行 prompt 的用户。
-- 为 coding agent、研究 agent、数据分析 agent 或文档 agent 编写任务说明的人。
-- 维护 Prompt Skill Hub、模板库、路由系统和 eval cases 的团队。
-- 需要在医疗、法律、金融、安全、招聘、隐私等高风险领域保持边界的 AI workflow 设计者。
+## 项目背景
 
-## 典型使用场景
+代码生成工具已经能完成大量开发辅助工作，但实际使用中，失败往往不是模型完全不会写代码，而是任务描述缺少工作目录、相关文件、错误日志、修改边界、验收标准和失败处理规则。初学者常把“帮我改一下”“做个页面”“修一下报错”直接交给 coding agent，导致 agent 猜测上下文、扩大修改范围、跳过验证或输出不可复查的结果。
 
-- 修复代码 bug、补测试、生成 Codex CLI 任务 prompt。
-- 分析仓库结构、输出项目理解报告。
-- 编写 PRD，并转成开发 Agent prompt。
-- 设计 RAG 知识库，包含引用、权限、更新和评估。
-- 做数据分析 prompt，包含字段、清洗、指标、图表和结论边界。
-- 将合同、体检报告、金融资料等高风险材料整理为安全的信息性 prompt。
-- 审计和改进 Prompt 系统本身。
+CodePrompt Coach 将这个问题转化为需求工程问题：先引导用户澄清任务，再评价 prompt 质量，最后生成可执行、可验证、可复盘的 coding agent prompt。
 
-## 自然语言入口
+## 项目痛点
 
-用户不需要先理解目录结构，可以直接用自然语言描述需求：
+- 模糊需求无法直接驱动稳定的代码生成。
+- 用户不知道哪些信息对 coding agent 是关键上下文。
+- prompt 缺少约束，容易导致无关重构、删除测试、虚构验证结果。
+- prompt 缺少可检查验收标准，无法判断 agent 是否真正完成。
+- 失败经验没有沉淀，下一次仍会重复缺少日志、路径、验证命令等问题。
 
-- “帮我写一个 prompt，让 Codex 修复 npm run build 报错。”
-- “把这个产品想法改成可交给 Claude Code 的开发任务。”
-- “我想设计一个 RAG 知识库 prompt，要求带引用和权限控制。”
-- “帮我检查这个 prompt 为什么不稳定。”
-- “帮我生成一个医疗信息整理 prompt，但不要让模型做诊断。”
+## 核心功能
 
-AI Agent 使用本项目时应按以下顺序处理：
+1. **分级需求澄清**：按 Level 0 到 Level 4 引导用户补齐任务类型、交付物、项目上下文、约束边界和验证方式。
+2. **软件工程场景分类**：保留新功能开发、bugfix、重构、测试生成、代码审查、仓库理解、API 设计、数据库迁移、DevOps/CI、算法、前端和后端实现等 MVP 场景。
+3. **Prompt 量化评分**：按 8 个维度输出 100 分评分、扣分原因、缺失关键信息和是否可交给 coding agent。
+4. **Prompt 生成器**：根据结构化需求生成适配 Codex、Codex CLI、Claude Code、Gemini CLI、ChatGPT 的任务 prompt。
+5. **生成后自审**：对生成 prompt 再评分，识别低分维度并给出修订建议。
+6. **错题本机制**：将低分维度、错误类型、改进建议和是否应更新问题树/评分规则/模板写入 lesson 数据。
 
-1. 归一化用户真实任务和最终交付物。
-2. 选择唯一主分支和必要辅助分支。
-3. 从 `metadata/resources.yaml` 选择 template、checklist、example、eval、adapter、safety 和 lesson。
-4. 识别缺失输入并分类为可假设、待补充、需追问或阻塞。
-5. 做风险检查，高风险任务必须引用 `safety/` 资源。
-6. 生成最终 prompt，并用 checklist 与 eval case 对照自检。
+## 技术路线
 
-标准输出建议：
+当前 MVP 使用轻量 TypeScript 结构，不依赖外部包，Node 24 可直接运行 TypeScript strip-types 模式。
 
 ```text
-需求摘要：
-最终交付物：
-主分支：
-辅助分支：
-使用资源：
-缺失输入：
-风险等级：
-安全边界：
-最终 prompt：
-自检结果：
-匹配 eval：
-可能新增 lesson：
+用户模糊需求
+  -> 分级问题树
+  -> 结构化需求
+  -> 初始 prompt 评分
+  -> coding agent prompt 生成
+  -> 生成后评分与自审
+  -> PromptMistake / lessons 记录
+  -> 反向优化问题树、评分规则和模板
 ```
 
-如果用户只要最终 prompt，AI Agent 可以不展示完整路由，但内部仍应完成同样的路由、资源选择、风险检查和自检。
+## MVP 范围
 
-## 最短使用路径
+保留并强化的软件工程场景：
 
-1. 读 `router.md`，按最终交付物选择唯一主分支。
-2. 必要时用 `branch-composition.md` 选择 1 到 3 个辅助分支。
-3. 用 `templates.md` 和对应 `branches/` 文件生成 prompt。
-4. 用 `checklists.md` 自检。
+- `feature-development` 新功能开发
+- `bugfix-debugging` Bug 修复与调试
+- `refactor-architecture` 代码重构
+- `test-generation` 测试生成
+- `code-review` 代码审查
+- `repository-analysis` 仓库理解
+- `api-design` API 设计
+- `database-migration` 数据库迁移
+- `devops-ci` DevOps / CI
+- `algorithm-problem-solving` 算法与数据结构任务
+- `frontend-implementation` 前端页面与交互开发
+- `backend-implementation` 后端接口与业务逻辑开发
 
-## 完整使用路径
+医疗、法律、金融、营销、创意、多模态、通用数据分析等旧资源已归档到 `legacy/archived-general-domains/`，不作为 MVP 核心能力。
 
-1. `prompt-generation-protocol.md`：按 Intake、Normalize、Route、Missing Inputs、Risk Check、Construct、Self Check、Finalize 执行。
-2. `router.md`：输出主分支、辅助分支、命中原因、缺失输入、风险等级和构造策略。
-3. `common-principles.md`：统一缺失输入、约束优先级、防幻觉、高风险边界和工具适配。
-4. `templates.md`：选择通用模板、分支模板或多分支组合模板。
-5. `checklists.md`：用通用、路由、分支、高风险和最终交付前检查表验收。
-6. `examples.md`：参考从模糊需求到最终 prompt 的全过程示例。
-7. `evals/`：用 eval case 检查生成 prompt 的质量。
-8. `branches/manifest.yaml`：读取机器可用的重点分支索引和 eval 覆盖。
-9. `metadata/resources.yaml`：读取统一资源注册表，组合 branch、template、checklist、example、eval、adapter、safety 和 lesson。
-10. `lessons/`：参考已知失败模式、成功模式和改进建议。
-11. `adapters/`：目标工具明确时套用 Codex、Codex CLI、Claude Code、Gemini CLI 或 ChatGPT 适配规则。
-12. `safety/`：医疗、法律、金融、安全、隐私等高风险任务必须套用边界资源。
+## 使用流程
 
-## 核心目录说明
+1. 用户输入原始需求，例如“帮我写一个 prompt，让 Codex 修复 npm run build 报错”。
+2. 系统识别任务类型为 `bugfix-debugging`。
+3. 系统按层级追问：工作目录、错误日志、复现命令、相关文件、允许修改范围、禁止事项、验证命令。
+4. 系统对原始需求评分，指出缺少日志、路径、验证命令等问题。
+5. 系统生成最终 coding agent prompt。
+6. 系统对生成 prompt 再评分，低分项写入错题本。
+7. 后续根据错题统计优化问题树、评分规则和 prompt 模板。
 
-| 路径 | 作用 | 何时使用 |
-|---|---|---|
-| `SKILL.md` | Skill 总入口 | AI Agent 使用本 Skill Hub 时先读 |
-| `prompt-generation-protocol.md` | Prompt 生成协议 | 从自然语言需求生成最终 prompt 时使用 |
-| `router.md` | 多层路由规则 | 判断主分支、辅助分支、风险、资源引用 |
-| `branch-composition.md` | 多分支组合规则 | 一个任务同时需要工具适配、验证、报告、引用或安全边界时使用 |
-| `common-principles.md` | 通用质量原则 | 所有分支共享，处理缺失输入、防幻觉、高风险和工具适配 |
-| `templates.md` | 可复制模板 | 快速生成通用、coding、RAG、PRD、数据分析、高风险和 meta prompt |
-| `checklists.md` | 可判断验收清单 | 交付前检查 prompt 是否可执行、可验证、未越界 |
-| `examples.md` | 全流程示例 | 参考从模糊需求到最终 prompt 的写法 |
-| `branches/` | 场景分支 | 主分支和辅助分支的详细规则 |
-| `branches/manifest.yaml` | 重点分支 manifest | 机器读取重点分支、eval 覆盖和输出章节 |
-| `metadata/resources.yaml` | 资源注册表 | 统一查找 branch、template、checklist、eval、adapter、safety、lesson |
-| `evals/` | Prompt 质量评测 | 检查生成 prompt 本身是否合格 |
-| `lessons/` | 经验记忆库 | 记录失败模式、成功模式和改进建议 |
-| `adapters/` | 目标工具适配 | Codex、Codex CLI、Claude Code、Gemini CLI、ChatGPT |
-| `safety/` | 高风险边界 | 医疗、法律、金融、安全、隐私 |
-| `scripts/` | 维护脚本 | 校验、统计和分支管理 |
+## 示例
 
-## 路由示例
-
-用户输入：
+原始需求：
 
 ```text
-帮我写一个 prompt，让 Codex 修复这个项目 npm run build 报错，并确保不要乱改。
+帮我让 Codex 修复 npm run build 报错，不要乱改。
 ```
 
-路由结果：
+补齐关键问题后，系统生成的 prompt 会包含：
+
+- 工作目录和目标工具；
+- 错误日志和复现步骤；
+- 相关文件；
+- 最小修复和禁止无关重构；
+- 构建与测试命令；
+- 验证失败时的报告规则；
+- 最终输出格式。
+
+完整示例见 `examples/bugfix-session.example.md`、`examples/feature-session.example.md`、`examples/test-generation-session.example.md` 和 `examples/code-review-session.example.md`。
+
+## 评分体系
+
+总分 100 分：
+
+| 维度 | 分值 |
+|---|---:|
+| 任务目标清晰度 | 15 |
+| 上下文完整度 | 15 |
+| 输入材料可定位性 | 10 |
+| 约束与禁止事项 | 15 |
+| 输出格式明确度 | 10 |
+| 验收标准可检查性 | 15 |
+| 风险与异常处理 | 10 |
+| coding agent 适配度 | 10 |
+
+评分输出包含总分、各维度得分、扣分原因、优先改进建议、是否适合直接交给 coding agent，以及最缺失的 3 个关键信息。
+
+## 错题本机制
+
+`PromptMistake` 记录每次评分和生成中的低分点：
+
+- 原始 prompt 与生成 prompt；
+- 生成前后得分；
+- 低分维度；
+- 错误类型与修复建议；
+- 是否应更新问题树、评分规则或 prompt 模板。
+
+这一机制既服务工程迭代，也可作为大创申报材料中的“持续反馈与自我改进机制”。
+
+## 目录说明
 
 ```text
-需求摘要：为 Codex 生成一个修复 npm build 失败的执行 prompt
-最终交付物：可交给 Codex 执行的 bugfix prompt
-主分支：software-engineering/bugfix-debugging
-辅助分支：software-engineering/test-generation, software-engineering/cli-agent
-使用资源：
-- @branch://software-engineering/bugfix-debugging
-- @template://coding-agent/bugfix
-- @adapter://codex
-- @checklist://coding-agent/final-review
-- @eval://software-engineering/bugfix-debugging/missing-inputs
-- @lesson://routing/ambiguous-bugfix-request
-风险等级：medium
-缺失输入：错误日志、复现步骤、工作目录、环境信息、验证命令
+docs/                         大创申报与项目设计文档
+src/domain/                   场景、问题树、评分规则、模板配置
+src/core/                     需求会话、问题引擎、评分器、生成器、自审、错题本
+src/storage/                  lesson/session 的轻量文件存储
+src/cli/                      MVP 演示入口
+tests/                        Node test 测试
+examples/                     四个完整问答与最终 prompt 示例
+branches/software-engineering 原仓库保留的软件工程分支资产
+adapters/                     Codex、Codex CLI、Claude Code、Gemini CLI、ChatGPT 适配规则
+evals/                        prompt 质量 eval
+lessons/                      经验记录与错题本机制
+legacy/archived-general-domains/ 非 MVP 旧领域归档
 ```
 
-最终 prompt：
+## 运行方式
 
-```text
-你是 Codex，请在 `[待补充: working_directory]` 修复 `npm run build` 报错。错误日志：`[待补充: error_log]`。先读取 `package.json`、构建配置、错误栈指向文件和相关测试；先复现失败或说明无法复现原因，再定位根因。只做最小修复，禁止无关重构、全仓库格式化、新增依赖、删除测试、降低断言或注释掉失败逻辑。修复后运行 `npm run build` 和 `[待补充: test_command]`。最终输出根因、证据、修改文件、关键改动、验证命令与结果、未验证项和剩余风险。
-```
-
-自检结果：
-
-- [x] 主分支由最终交付物决定。
-- [x] 缺失输入已标注。
-- [x] 包含最小修复、禁止事项和验证命令。
-- [x] 输出格式可直接交给 Codex 执行。
-- [x] 匹配 eval：`@eval://software-engineering/bugfix-debugging/missing-inputs`。
-- [x] 相关 lesson：`@lesson://routing/ambiguous-bugfix-request`。
-
-## 资源如何协作
-
-一次高质量 prompt 生成通常不是只读取一个分支，而是组合多类资源。
-
-示例：bugfix 请求的资源组合：
-
-| 资源类型 | 示例 | 作用 |
-|---|---|---|
-| branch | `@branch://software-engineering/bugfix-debugging` | 定义最终交付物、输入、硬约束和验收标准 |
-| auxiliary branch | `@branch://software-engineering/test-generation` | 补充回归测试和验证要求 |
-| template | `@template://coding-agent/bugfix` | 提供可复制 prompt 骨架 |
-| checklist | `@checklist://coding-agent/final-review` | 检查工作目录、修改范围、验证命令和报告格式 |
-| adapter | `@adapter://codex` | 适配 Codex 的仓库读取、最小修改和验证输出 |
-| eval | `@eval://software-engineering/bugfix-debugging/missing-inputs` | 检查缺失日志时是否禁止猜测修复 |
-| lesson | `@lesson://routing/ambiguous-bugfix-request` | 注入已知失败经验：缺日志不能直接改代码 |
-
-示例：RAG 请求的资源组合：
-
-| 资源类型 | 示例 | 作用 |
-|---|---|---|
-| branch | `@branch://ai-systems/knowledge-base-rag` | 定义知识源、chunk、metadata、retrieval、citation、eval |
-| safety | `@safety://privacy-boundary`, `@safety://security-boundary` | 处理内部文档权限、隐私和审计 |
-| checklist | `@checklist://rag` | 检查引用、拒答、权限、更新和评估指标 |
-| eval | `@eval://ai-systems/knowledge-base-rag/citation-required` | 检查没有检索证据时不得回答 |
-| lesson | `@lesson://unsafe-patterns/rag-unsourced-answer` | 防止无来源回答成为默认行为 |
-
-## 语言和命名约定
-
-本项目允许中英文混用，但必须有明确边界。
-
-机器需要稳定识别的内容统一使用英文：
-
-- 文件名和目录名。
-- 分支、模板、检查表、eval、adapter、safety、lesson 的 ID。
-- Resource URI，例如 `@branch://software-engineering/bugfix-debugging`。
-- YAML key 和 schema 字段，例如 `expected_primary_branch`。
-- 脚本命令、脚本元数据和模板占位符，例如 `{{working_directory}}`。
-
-面向人阅读的内容优先使用中文：
-
-- 说明段落。
-- 示例需求。
-- 模板正文。
-- 检查项。
-- 验收标准。
-- 常见错误和修复说明。
-
-术语保持一致：
-
-| 概念 | 机器标识符 | 中文显示 |
-|---|---|---|
-| Primary branch | `primary_branch` | 主分支 |
-| Auxiliary branches | `auxiliary_branches` | 辅助分支 |
-| Resource registry | `metadata/resources.yaml` | 资源注册表 |
-| Eval case | `eval_case` | eval case / 评测样例 |
-| Lesson | `lesson` | lesson / 经验记录 |
-| Legal policy review | `legal-policy-review` | 法律/政策审阅 |
-| Finance investment analysis | `finance-investment-analysis` | 金融/投资分析 |
-
-不要新增中文资源 ID、中文 URI、中文 YAML key，避免同一概念同时出现多个路径或别名。
-
-## 如何选择主分支
-
-主分支只看用户最终想得到的交付物：
-
-- 修复错误：`branches/software-engineering/bugfix-debugging.md`
-- 理解仓库：`branches/software-engineering/repository-analysis.md`
-- 写新功能：`branches/software-engineering/coding-feature-development.md`
-- 补测试：`branches/software-engineering/test-generation.md`
-- 写 PRD：`branches/product-design-business/product-requirements.md`
-- 做 RAG：`branches/ai-systems/knowledge-base-rag.md`
-- 做数据分析：`branches/data-analytics/data-analysis.md`
-- 写报告：`branches/documents-research/report-writing.md`
-- 医疗/法律/金融：对应 `branches/domain-specific/`
-- 改进 Prompt 系统：`branches/meta/meta-skill-builder.md`
-
-## 如何组合辅助分支
-
-辅助分支只在能提升执行质量时使用：
-
-- CLI 工具：`software-engineering/cli-agent`
-- 验证或测试：`software-engineering/test-generation`
-- 正式报告：`documents-research/report-writing`
-- 来源引用：`documents-research/documentation-analysis` 或 `ai-systems/knowledge-base-rag`
-- 安全边界：`software-engineering/security-threat-modeling` 或对应高风险分支
-
-普通任务 0 到 1 个辅助分支，中等复杂任务 1 到 2 个，高风险或跨域任务最多 3 个。超过 3 个时拆成多阶段 prompt。
-
-辅助分支不改变最终交付物，只补充执行质量。例如：
-
-- `bugfix-debugging + test-generation + cli-agent`：修 bug，同时要求测试验证和 CLI 执行边界。
-- `repository-analysis + report-writing`：只读分析仓库，并输出正式报告。
-- `product-requirements + coding-feature-development`：先写 PRD，再生成开发 Agent prompt。
-- `knowledge-base-rag + security-threat-modeling`：设计 RAG，同时处理权限、审计和泄露风险。
-- `medical-health-info + report-writing`：医疗信息只做结构化整理，不做诊断。
-
-当辅助分支过多时，优先保留：
-
-1. 安全边界。
-2. 目标工具 adapter。
-3. 验证/测试。
-4. 引用/证据。
-5. 输出格式。
-
-## 如何使用 Eval Cases
-
-`evals/cases/` 里的 YAML 用来验证“生成的 prompt 是否高质量”，不是验证模型最终任务结果。
-
-每个 case 包含：
-- `expected_primary_branch`
-- `expected_auxiliary_branches`
-- `required_missing_inputs`
-- `expected_prompt_features`
-- `forbidden_prompt_features`
-- `acceptance_criteria`
-- `expected_resources`
-- `related_lessons`
-
-使用方式：
+要求 Node.js 24 或更高版本。
 
 ```bash
-python3 scripts/skill_hub_manager.py validate
-python3 scripts/skill_hub_manager.py stats
+npm.cmd run demo
+npm.cmd test
+npm.cmd run validate
 ```
 
-`evals/features/` 使用 Gherkin 风格描述关键行为，例如自然语言入口、资源注册表、RAG 引用权限、高风险边界和 lesson 反馈闭环。它们适合人工 review，也为未来脚本或 LLM judge 预留入口。
+在 PowerShell 中优先使用 `npm.cmd`，避免本机执行策略拦截 `npm.ps1`。
 
-Eval case 的判断方式：
+## 大创项目价值
 
-1. 用 `user_request` 走完整 prompt-generation protocol。
-2. 比对 `expected_primary_branch` 和 `expected_auxiliary_branches`。
-3. 检查是否选择 `expected_resources`。
-4. 检查缺失输入是否按 `required_missing_inputs` 处理。
-5. 确认 `expected_prompt_features` 全部出现在最终 prompt 中。
-6. 确认 `forbidden_prompt_features` 没有出现。
-7. 用 `acceptance_criteria` 判断通过或失败。
+- **软件工程价值**：把模糊需求转成结构化开发任务，降低 coding agent 误改和漏验风险。
+- **教育价值**：训练学生表达目标、上下文、约束、验收和测试。
+- **工程价值**：提高 Codex 等 coding agent 的执行稳定性和可复查性。
+- **研究价值**：沉淀 prompt 评分数据、缺失信息模式和失败类型。
+- **创新价值**：从“prompt 生成器”升级为“诊断、教学、生成、审查、迭代”的闭环系统。
 
-如果某个 eval 失败，应回看：
+## 后续规划
 
-- `router.md` 是否路由错。
-- `metadata/resources.yaml` 是否少绑定资源。
-- `templates.md` 或分支模板是否缺关键约束。
-- `checklists.md` 是否少检查 forbidden features。
-- `lessons/` 是否需要新增失败经验。
-
-## 资源注册表
-
-`metadata/resources.yaml` 是轻量资源协议，不替代 Markdown 文档。它用 URI 把资源连接起来：
-
-- `@branch://software-engineering/bugfix-debugging`
-- `@template://coding-agent/bugfix`
-- `@checklist://coding-agent/final-review`
-- `@eval://software-engineering/bugfix-debugging/basic`
-- `@adapter://codex-cli`
-- `@safety://medical-boundary`
-- `@lesson://routing/ambiguous-bugfix-request`
-
-Router 应先选主分支，再用 registry 找模板、检查表、adapter、safety、eval 和 lesson。
-
-Registry 中重点资源关系包括：
-
-- `linked_templates`：该分支常用模板。
-- `linked_checklists`：生成 prompt 后必须检查的清单。
-- `linked_evals`：可用于验证 prompt 质量的 eval cases。
-- `linked_lessons`：已知失败模式或成功模式。
-- `compatible_adapters`：适合的目标工具。
-- `safety_resources`：高风险边界资源。
-
-Registry 的设计原则：
-
-- 轻量，不做数据库。
-- 可读，不替代 Markdown。
-- 稳定，URI 不随标题变化。
-- 可组合，支持主分支、辅助分支、adapter、safety 和 eval 一起使用。
-- 可扩展，为未来 CLI、Web UI 或 MCP prompt provider 留基础，但当前不实现这些平台能力。
-
-## Lessons 经验库
-
-`lessons/` 记录项目经验，不是运行时记忆系统。它用于沉淀：
-
-- 路由失败。
-- Prompt 生成失败。
-- 高风险越界风险。
-- 成功 prompt 组合模式。
-- registry、eval、checklist 和示例的改进建议。
-
-如果一个生成 prompt 没通过 eval，应考虑新增 lesson，记录触发条件、失败模式、根因、修复建议和 update targets。
-
-Lesson 推荐使用场景：
-
-- 路由失败：例如 RAG 请求被路由为普通文档总结。
-- Prompt 失败：例如 bugfix prompt 没有验证命令。
-- 高风险误用：例如医疗 prompt 给出诊断。
-- 成功模式：例如 bugfix 的“根因分析 + 最小修复 + 验证命令”模式稳定有效。
-- 改进建议：例如 registry 应把 branch 绑定到 eval 和 lesson。
-
-Lesson 不应记录：
-
-- 用户身份、账号、密钥、患者细节、合同原文、财务账户。
-- 完整私人对话。
-- 未经来源支持的事实。
-
-## Adapters 与 Safety
-
-`adapters/` 说明不同目标工具的 prompt 构造差异。目标工具明确时必须引用对应 adapter。
-
-`safety/` 说明高风险边界。医疗、法律、金融、安全、隐私相关 prompt 必须引用对应 safety resource，不得只写普通免责声明。
-
-Adapter 选择示例：
-
-| 目标工具 | Adapter | Prompt 重点 |
-|---|---|---|
-| Codex | `@adapter://codex` | 工作目录、先读文件、最小改动、验证命令、变更报告 |
-| Codex CLI | `@adapter://codex-cli` | 命令权限、shell 验证、失败处理、不可验证说明 |
-| Claude Code | `@adapter://claude-code` | 渐进修改、现有风格、上下文读取、测试回归 |
-| Gemini CLI | `@adapter://gemini-cli` | 路径、命令、日志、环境假设 |
-| ChatGPT | `@adapter://chatgpt` | 结构化输出、事实/假设分离、引用和不确定性 |
-
-Safety 选择示例：
-
-| 风险领域 | Safety | Prompt 边界 |
-|---|---|---|
-| 医疗 | `@safety://medical-boundary` | 不诊断、不处方、不停药换药 |
-| 法律 | `@safety://legal-boundary` | 不替代律师、不做最终法律结论 |
-| 金融 | `@safety://financial-boundary` | 不给个性化买卖建议、不保证收益 |
-| 安全 | `@safety://security-boundary` | 只做防御性安全，不提供攻击链 |
-| 隐私 | `@safety://privacy-boundary` | 最小化、脱敏、权限、保留边界 |
-
-## 维护和验证
-
-运行结构校验：
-
-```bash
-python3 scripts/skill_hub_manager.py validate
-```
-
-查看能力统计：
-
-```bash
-python3 scripts/skill_hub_manager.py stats
-```
-
-当前能力统计包括：
-
-- 45 个分支。
-- 34 个模板。
-- 48 个检查表。
-- 51 个 eval cases。
-- 6 个 Gherkin feature。
-- 5 个 lesson YAML。
-- 6 个 adapter 文档。
-- 6 个 safety 文档。
-
-`validate` 会检查根文件、分支结构、manifest、resource registry、eval schema、feature 文件、lesson 字段、adapter 和 safety 资源。
-
-## 如何扩展新分支
-
-新增分支时应同步更新：
-- `SKILL.md`
-- `router.md`
-- `templates.md`
-- `checklists.md`
-- `examples.md`
-- `branches/manifest.yaml`
-- `metadata/resources.yaml`
-- `evals/cases/<category>/<branch>/`
-- `lessons/` 中相关失败或成功模式，如适用
-
-每个分支必须包含 10 节：Purpose、Trigger Conditions、Required Inputs、Prompt Construction Rules、Hard Constraints、Output Format、Quality Checklist、Common Mistakes、Reusable Template、Example。
-
-## 高风险领域说明
-
-- 医疗：不诊断、不处方、不停药换药，只做症状整理、红旗信号和就医准备。
-- 法律：不替代律师，不给最终法律结论，必须要求司法辖区和文本。
-- 金融：不构成个性化投资建议，不保证收益，不给买卖指令。
-- 安全：只支持防御性安全，不提供攻击链、payload、绕过或持久化。
-- 招聘/人事：不使用受保护属性，必须基于岗位相关证据。
-- 隐私/个人数据：最小化、脱敏、限定用途和保留边界。
+1. 将问题树从静态规则扩展为可配置 JSON/YAML。
+2. 接入 Web 原型，支持多轮分级澄清和评分可视化。
+3. 建立真实学生 coding prompt 数据集，统计常见缺失信息。
+4. 让错题本自动生成问题树和模板更新建议。
+5. 补充 CLI 或 MCP 接口，让 CodePrompt Coach 可嵌入现有 coding agent 工作流。
