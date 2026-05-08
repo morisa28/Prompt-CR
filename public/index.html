@@ -7,123 +7,172 @@
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <header class="topbar">
-      <div class="brand">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <div>
-          <h1>CodePrompt Coach</h1>
-          <p>Prompt-CR: Clarification & Review</p>
-        </div>
-      </div>
-      <div class="status-strip" aria-label="流程状态">
-        <span>分析</span>
-        <span>追问</span>
-        <span>生成</span>
-        <span>错题</span>
-      </div>
-    </header>
-
-    <main class="workspace">
-      <section class="panel input-panel" aria-labelledby="input-title">
-        <div class="panel-head">
-          <h2 id="input-title">需求输入与动态追问</h2>
-          <button class="secondary-button" id="load-sample" type="button">加载示例</button>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">CR</span>
+          <div class="brand-copy">
+            <p class="eyebrow">Prompt-CR</p>
+            <h1>CodePrompt Coach</h1>
+            <p>面向代码生成智能体的分级需求澄清与 Prompt 优化系统</p>
+          </div>
         </div>
 
-        <form id="coach-form">
-          <div class="field-grid">
-            <label>
-              核心场景
-              <select id="scenario" name="scenario" data-testid="scenario-select"></select>
-            </label>
-            <label>
-              目标工具
-              <select id="targetTool" name="targetTool" data-testid="target-tool-select"></select>
-            </label>
+        <div class="topbar-metrics" aria-label="项目状态">
+          <div class="metric-chip">
+            <span>Core</span>
+            <strong>3</strong>
           </div>
-
-          <details class="extension-scenarios">
-            <summary>扩展场景</summary>
-            <div id="extension-scenario-list" class="scenario-pills"></div>
-          </details>
-
-          <label>
-            原始需求
-            <textarea
-              id="originalPrompt"
-              name="originalPrompt"
-              rows="4"
-              data-testid="original-prompt"
-              placeholder="例如：帮我让 Codex 修复 npm run build 报错，不要乱改。"
-            ></textarea>
-          </label>
-
-          <div class="action-row">
-            <button class="secondary-button" id="analyze-button" type="button" data-testid="analyze-button">
-              分析当前需求
-            </button>
-            <button class="secondary-button" id="continue-button" type="button">继续追问</button>
+          <div class="metric-chip">
+            <span>Eval</span>
+            <strong>30</strong>
           </div>
+          <div class="metric-chip">
+            <span>Tests</span>
+            <strong>23</strong>
+          </div>
+        </div>
+      </header>
 
-          <section class="follow-up-box" aria-labelledby="follow-up-title">
-            <div class="section-head">
-              <h3 id="follow-up-title">关键追问</h3>
-              <span id="follow-up-count" class="mini-badge">0/3</span>
+      <section class="process-strip" aria-label="工作流">
+        <div class="process-step is-active" data-stage="analyze">
+          <span>01</span>
+          <strong>诊断需求</strong>
+        </div>
+        <div class="process-step" data-stage="followup">
+          <span>02</span>
+          <strong>动态追问</strong>
+        </div>
+        <div class="process-step" data-stage="generate">
+          <span>03</span>
+          <strong>生成 Prompt</strong>
+        </div>
+        <div class="process-step" data-stage="review">
+          <span>04</span>
+          <strong>自审复盘</strong>
+        </div>
+      </section>
+
+      <main class="workspace">
+        <section class="panel input-panel" aria-labelledby="input-title">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Requirement Intake</p>
+              <h2 id="input-title">需求输入与澄清</h2>
             </div>
-            <div id="follow-up-questions" class="follow-up-list" data-testid="follow-up-questions"></div>
-          </section>
-
-          <details class="all-questions">
-            <summary>展开全部问题</summary>
-            <div id="question-groups" class="question-groups" data-testid="question-groups"></div>
-          </details>
-
-          <button class="primary-button" type="submit" data-testid="evaluate-button">一键生成最终 Prompt</button>
-        </form>
-      </section>
-
-      <section class="panel output-panel" aria-labelledby="output-title">
-        <div class="panel-head">
-          <h2 id="output-title">结构化摘要与最终 Prompt</h2>
-          <button class="secondary-button" id="copy-prompt" type="button" disabled>复制</button>
-        </div>
-        <div id="requirement-summary" class="summary-grid empty-state">等待分析结果</div>
-        <textarea
-          id="generatedPrompt"
-          class="prompt-output"
-          rows="22"
-          readonly
-          data-testid="generated-prompt"
-        ></textarea>
-      </section>
-
-      <aside class="panel score-panel" aria-labelledby="score-title">
-        <div class="panel-head">
-          <h2 id="score-title">评分与错题本</h2>
-          <span id="review-badge" class="badge">未分析</span>
-        </div>
-
-        <div class="score-stack">
-          <div class="score-card">
-            <h3>当前需求</h3>
-            <div id="original-score" class="score-meter" data-testid="original-score">--</div>
+            <button class="secondary-button compact" id="load-sample" type="button">加载示例</button>
           </div>
-          <div class="score-card">
-            <h3>结构化后</h3>
-            <div id="structured-score" class="score-meter" data-testid="structured-score">--</div>
-          </div>
-          <div class="score-card">
-            <h3>生成后自审</h3>
-            <div id="generated-score" class="score-meter" data-testid="generated-score">--</div>
-          </div>
-        </div>
 
-        <div id="dimension-scores" class="dimension-list"></div>
-        <div id="missing-info" class="feedback-block"></div>
-        <div id="lesson-record" class="feedback-block"></div>
-        <div id="lesson-summary" class="feedback-block"></div>
-      </aside>
-    </main>
+          <form id="coach-form">
+            <div class="field-grid">
+              <label>
+                <span>核心场景</span>
+                <select id="scenario" name="scenario" data-testid="scenario-select"></select>
+              </label>
+              <label>
+                <span>目标工具</span>
+                <select id="targetTool" name="targetTool" data-testid="target-tool-select"></select>
+              </label>
+            </div>
+
+            <details class="extension-scenarios">
+              <summary>
+                <span>扩展场景</span>
+                <small>保留为后续能力</small>
+              </summary>
+              <div id="extension-scenario-list" class="scenario-pills"></div>
+            </details>
+
+            <label>
+              <span>原始需求</span>
+              <textarea
+                id="originalPrompt"
+                name="originalPrompt"
+                rows="5"
+                data-testid="original-prompt"
+                placeholder="例如：帮我让 Codex 修复 npm run build 报错，不要乱改。"
+              ></textarea>
+            </label>
+
+            <div class="action-row">
+              <button class="secondary-button" id="analyze-button" type="button" data-testid="analyze-button">
+                分析当前需求
+              </button>
+              <button class="secondary-button" id="continue-button" type="button">继续追问</button>
+            </div>
+
+            <section class="follow-up-box" aria-labelledby="follow-up-title">
+              <div class="section-head">
+                <div>
+                  <p class="panel-kicker">Next Best Questions</p>
+                  <h3 id="follow-up-title">关键追问</h3>
+                </div>
+                <span id="follow-up-count" class="mini-badge">0/3</span>
+              </div>
+              <div id="follow-up-questions" class="follow-up-list" data-testid="follow-up-questions"></div>
+            </section>
+
+            <details class="all-questions">
+              <summary>
+                <span>展开全部问题</span>
+                <small>高级模式</small>
+              </summary>
+              <div id="question-groups" class="question-groups" data-testid="question-groups"></div>
+            </details>
+
+            <button class="primary-button" type="submit" data-testid="evaluate-button">生成最终 Prompt</button>
+          </form>
+        </section>
+
+        <section class="panel output-panel" aria-labelledby="output-title">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Agent Prompt</p>
+              <h2 id="output-title">结构化摘要与最终 Prompt</h2>
+            </div>
+            <button class="secondary-button compact" id="copy-prompt" type="button" disabled>复制</button>
+          </div>
+          <div id="requirement-summary" class="summary-grid empty-state">等待分析结果</div>
+          <textarea
+            id="generatedPrompt"
+            class="prompt-output"
+            rows="22"
+            readonly
+            data-testid="generated-prompt"
+          ></textarea>
+        </section>
+
+        <aside class="panel score-panel" aria-labelledby="score-title">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Quality Review</p>
+              <h2 id="score-title">评分与错题本</h2>
+            </div>
+            <span id="review-badge" class="badge">未分析</span>
+          </div>
+
+          <div class="score-stack">
+            <div class="score-card">
+              <h3>当前需求</h3>
+              <div id="original-score" class="score-meter" data-testid="original-score">--</div>
+            </div>
+            <div class="score-card">
+              <h3>结构化后</h3>
+              <div id="structured-score" class="score-meter" data-testid="structured-score">--</div>
+            </div>
+            <div class="score-card">
+              <h3>生成后自审</h3>
+              <div id="generated-score" class="score-meter" data-testid="generated-score">--</div>
+            </div>
+          </div>
+
+          <div id="dimension-scores" class="dimension-list"></div>
+          <div id="missing-info" class="feedback-block"></div>
+          <div id="lesson-record" class="feedback-block"></div>
+          <div id="lesson-summary" class="feedback-block"></div>
+        </aside>
+      </main>
+    </div>
 
     <script src="/app.js"></script>
   </body>

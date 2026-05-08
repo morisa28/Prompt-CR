@@ -33,7 +33,10 @@ const nodes = {
   missingInfo: document.querySelector("#missing-info"),
   lessonRecord: document.querySelector("#lesson-record"),
   lessonSummary: document.querySelector("#lesson-summary"),
+  processSteps: [...document.querySelectorAll(".process-step")],
 };
+
+const processOrder = ["analyze", "followup", "generate", "review"];
 
 const levelNames = {
   1: "Level 1 目标与交付",
@@ -80,6 +83,15 @@ function setOptions(select, options, getValue, getLabel) {
     element.value = getValue(option);
     element.textContent = getLabel(option);
     select.append(element);
+  }
+}
+
+function setStage(stage) {
+  const activeIndex = processOrder.indexOf(stage);
+  for (const step of nodes.processSteps) {
+    const stepIndex = processOrder.indexOf(step.dataset.stage);
+    step.classList.toggle("is-active", step.dataset.stage === stage);
+    step.classList.toggle("is-done", activeIndex > -1 && stepIndex > -1 && stepIndex < activeIndex);
   }
 }
 
@@ -285,6 +297,7 @@ function collectAnswers() {
 }
 
 async function analyze() {
+  setStage("analyze");
   const payload = {
     scenario: nodes.scenario.value,
     targetTool: nodes.targetTool.value,
@@ -296,6 +309,7 @@ async function analyze() {
     body: JSON.stringify(payload),
   });
   state.followUps = result.followUpQuestions;
+  setStage(state.followUps.length > 0 ? "followup" : "generate");
   renderScore(nodes.originalScore, result.score.totalScore);
   renderScore(nodes.structuredScore, result.score.totalScore);
   renderScore(nodes.generatedScore, "--");
@@ -324,6 +338,7 @@ function renderFollowUps() {
 
 async function evaluate(event) {
   event.preventDefault();
+  setStage("generate");
   const button = nodes.form.querySelector("button[type='submit']");
   button.disabled = true;
   button.textContent = "生成中";
@@ -339,6 +354,7 @@ async function evaluate(event) {
       method: "POST",
       body: JSON.stringify(payload),
     });
+    setStage("review");
     renderResult(state.result);
   } catch (error) {
     renderError(error);
@@ -530,10 +546,15 @@ function renderLessonSummary() {
   title.textContent = "错题本统计";
   const summary = state.lessonSummary;
   const list = document.createElement("ul");
+  const suggestions = [
+    ...(summary?.recommendedQuestionTreeUpdates || []),
+    ...(summary?.recommendedScoringRuleUpdates || []),
+    ...(summary?.recommendedTemplateUpdates || []),
+  ].filter((item, index, items) => items.indexOf(item) === index);
   const items = [
     `总记录数：${summary?.total ?? 0}`,
     `高频低分维度：${(summary?.topMissingInfo || []).join("；") || "暂无"}`,
-    `建议：${(summary?.suggestions || []).slice(0, 3).join("；") || "暂无"}`,
+    `建议：${suggestions.slice(0, 3).join("；") || "暂无"}`,
   ];
   for (const item of items) {
     const li = document.createElement("li");
@@ -544,6 +565,7 @@ function renderLessonSummary() {
 }
 
 function renderError(error) {
+  setStage("analyze");
   nodes.generatedPrompt.value = "";
   nodes.copyPrompt.disabled = true;
   nodes.reviewBadge.textContent = "失败";
@@ -596,4 +618,5 @@ nodes.copyPrompt.addEventListener("click", async () => {
   }, 1200);
 });
 
+setStage("analyze");
 loadMetadata().catch(renderError);
