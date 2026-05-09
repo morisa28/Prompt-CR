@@ -1,0 +1,7 @@
+interface:
+  display_name: "Prompt-CR"
+  short_description: "Clarify and review coding-agent prompts"
+  default_prompt: "Use $prompt-cr to turn this vague software engineering request into a Codex-ready task prompt."
+
+policy:
+  allow_implicit_invocation: true

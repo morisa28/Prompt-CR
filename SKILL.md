@@ -1,115 +1,76 @@
 ---
-name: codeprompt-coach
-description: Use when the user needs to turn a vague software engineering request into a clarified, scored, and coding-agent-ready prompt for Codex, Codex CLI, Claude Code, Gemini CLI, ChatGPT, or a similar coding agent.
+name: prompt-cr
+description: Use when a user needs to clarify, review, or rewrite a software engineering request into a coding-agent-ready prompt for Codex, Codex CLI, Claude Code, Gemini CLI, ChatGPT, Cursor, Copilot, or another AI coding agent.
 ---
 
-# CodePrompt Coach Skill
+# Prompt-CR
 
-## 1. Skill Purpose
+Prompt-CR turns vague software engineering requests into prompts that a coding agent can execute safely and verify. It is a lightweight clarification and review skill, not a prompt-generation service, scorer runtime, or autonomous learning system.
 
-CodePrompt Coach helps users clarify software engineering tasks before handing them to a coding agent. It guides the user through graded questions, scores the prompt quality, generates a target-tool prompt, reviews the generated prompt again, and records low-score patterns as lessons.
+## Branch Isolation Rule
 
-The project focuses on software engineering and computer science tasks. It no longer treats business, medical, legal, finance, marketing, creative, multimodal, and broad education prompts as MVP scope.
+This repository variant is maintained on the `Prompt_CR-skill` branch as an isolated skill package. Do not merge `Prompt_CR-skill` into `main` at any time. If content from this branch is needed elsewhere, manually port the specific reviewed files or ideas through a different branch.
 
-## 2. When to Use
+## Use This Skill When
 
-Use this skill when the user asks to:
+- The user wants a better prompt for Codex, Claude Code, Gemini CLI, ChatGPT, Cursor, Copilot, or another coding agent.
+- The request is about bug fixing, feature implementation, refactoring, tests, code review, repository analysis, API design, database migration, DevOps/CI, frontend/backend work, algorithms, CLI-agent execution, planning, or defensive security review.
+- The user asks whether a prompt is ready for a coding agent, or wants missing information and risks identified before handing the task to an agent.
 
-- generate or improve a prompt for Codex, Codex CLI, Claude Code, Gemini CLI, ChatGPT, Cursor, Copilot, or another coding agent;
-- clarify a vague development task before execution;
-- score an existing coding prompt;
-- convert bugfix, feature, refactor, test, code review, repository analysis, API, database, CI, frontend, backend, or algorithm work into a high-quality prompt;
-- build examples, evals, or lesson records for coding prompt quality.
+Do not use this skill for broad non-software domains such as medical, legal, finance, marketing, creative writing, generic tutoring, or document analysis unless the final deliverable is specifically a software engineering agent prompt.
 
-## 3. When Not to Use
+## Core Workflow
 
-Do not use this skill for broad non-MVP domains such as medical, legal, finance, marketing, creative writing, generic document analysis, or broad tutoring. Those legacy assets are archived under `legacy/archived-general-domains/` and should not drive the MVP flow.
+1. Identify the primary software engineering scenario. If more than one applies, choose one primary scenario and at most two auxiliary scenarios.
+2. Extract known facts: target agent/tool, working directory, objective, existing materials, constraints, allowed changes, forbidden actions, verification commands, and expected output.
+3. Detect blockers. Ask concise clarification questions only for missing information that would make the target agent unsafe or unable to act. For non-blocking gaps, use explicit placeholders such as `[to provide: verification command]`.
+4. Build the final agent prompt with:
+   - role and target tool;
+   - working directory or repository location;
+   - task objective and current context;
+   - relevant files, logs, screenshots, specs, diffs, or commands;
+   - execution steps;
+   - allowed modification scope and forbidden actions;
+   - verification commands or manual checks;
+   - final report format;
+   - failure handling and honesty rules.
+5. Review the prompt against the quality checklist before returning it. Fix vague language, missing acceptance criteria, missing verification, unsafe broad permissions, or fabricated facts.
+6. Return the improved prompt plus a short note listing remaining assumptions or missing details.
 
-## 4. How to Use This Skill
+## Load References As Needed
 
-1. Intake the user's original request and target tool.
-2. Select one software engineering scenario from `src/domain/scenarios.ts`.
-3. Ask Level 0 to Level 4 clarification questions from `src/domain/question-tree.ts`.
-4. Convert answers into `StructuredRequirement` with `src/core/requirement-session.ts`.
-5. Score the original prompt and structured requirement with `src/core/prompt-scorer.ts`.
-6. Generate the final coding-agent prompt with `src/core/prompt-generator.ts`.
-7. Review the generated prompt with `src/core/prompt-reviewer.ts`.
-8. If low dimensions remain, create a `PromptMistake` using `src/core/lesson-engine.ts`.
-9. Use `branches/software-engineering/`, `adapters/`, `evals/cases/software-engineering/`, and `lessons/` as reusable evidence and policy assets.
+- Read `references/scenarios.md` when choosing scenario-specific required inputs and prompt rules.
+- Read `references/prompt-patterns.md` when assembling the final prompt format or adapting it to a coding agent.
+- Read `references/quality-checklist.md` when scoring or reviewing prompt readiness.
+- Read `references/examples.md` when the user needs examples or before/after comparisons.
 
-## 5. MVP Scenarios
+## Scenario Selection Rules
 
-- `feature-development`: new features, UI components, backend logic, interaction flows; source asset `branches/software-engineering/coding-feature-development.md`.
-- `bugfix-debugging`: build failures, runtime errors, failing tests, CLI errors; source asset `branches/software-engineering/bugfix-debugging.md`.
-- `refactor-architecture`: behavior-preserving restructuring and architecture cleanup; source asset `branches/software-engineering/refactor-architecture.md`.
-- `test-generation`: unit, integration, E2E, regression, and coverage tests; source asset `branches/software-engineering/test-generation.md`.
-- `code-review`: findings-first review with locations, severity, and test gaps; source asset `branches/software-engineering/code-review.md`.
-- `repository-analysis`: read-only codebase understanding reports; source asset `branches/software-engineering/repository-analysis.md`.
-- `api-design`: API contracts, auth, errors, pagination, OpenAPI, examples; source asset `branches/software-engineering/api-design.md`.
-- `database-migration`: schema/data migration, backup, rollback, staging validation; source asset `branches/software-engineering/database-migration.md`.
-- `devops-ci`: CI/CD, build, deploy, runner, secrets, rollback; source asset `branches/software-engineering/devops-ci.md`.
-- `algorithm-problem-solving`: constraints, complexity, examples, edge cases; source asset `branches/software-engineering/algorithm-problem-solving.md`.
-- `frontend-implementation`: pages, components, states, responsiveness, accessibility; source asset `branches/software-engineering/coding-feature-development.md`.
-- `backend-implementation`: interfaces, business rules, validation, auth, data writes; source asset `branches/software-engineering/coding-feature-development.md`.
-- `cli-agent`: command-line permissions and reporting; source asset `branches/software-engineering/cli-agent.md`.
-- `plan-mode`: read-only planning before high-risk edits; source asset `branches/software-engineering/plan-mode.md`.
-- `security-threat-modeling`: defensive security review prompts; source asset `branches/software-engineering/security-threat-modeling.md`.
+- Use bugfix/debugging when there is an error log, failing command, failing test, runtime exception, blank screen, CLI failure, or regression.
+- Use feature implementation when the user wants new observable behavior, UI, backend logic, integration, or workflow.
+- Use test generation when the task is primarily to add or improve tests.
+- Use code review when the expected output is findings, severity, file locations, and test gaps rather than edits.
+- Use repository analysis when the task is explicitly read-only understanding, mapping, or explanation.
+- Use refactor/architecture when behavior should stay the same while structure changes.
+- Use API design, database migration, DevOps/CI, algorithm, security, CLI-agent, or plan-mode scenarios when those concerns dominate.
 
-## 6. Scoring Standard
+## Output Shape
 
-Score every prompt out of 100:
+Prefer this response structure:
 
-- clarity: 15
-- context: 15
-- locatableInputs: 10
-- constraints: 15
-- outputFormat: 10
-- acceptanceCriteria: 15
-- riskHandling: 10
-- agentAdaptation: 10
-
-The report must include total score, dimension scores, deductions, priority improvements, readiness level, whether it is suitable for a coding agent, and the three most missing critical details.
-
-## 7. Final Prompt Quality Standard
-
-A generated coding-agent prompt must include:
-
-- role and target tool;
-- working directory;
-- task objective;
-- project context;
-- related files and input materials;
-- execution steps;
-- modification scope;
-- hard constraints and forbidden actions;
-- verification commands;
-- final report format;
-- failure handling rules;
-- self-check requirements.
-
-For Codex-style prompts, always emphasize reading files first, minimal changes, no unrelated refactors, verification, honest reporting of failed checks, and no fabricated execution results.
-
-## 8. Project Files
-
-- `README.md`: project positioning and usage.
-- `docs/`: grant proposal and project design materials.
-- `src/domain/`: scenarios, question tree, scoring rubric, prompt template settings.
-- `src/core/`: requirement sessions, question engine, scorer, generator, reviewer, lesson engine.
-- `src/storage/`: JSON session and lesson stores.
-- `src/cli/`: demo CLI.
-- `tests/`: Node test suite.
-- `examples/`: complete scenario examples.
-- `branches/software-engineering/`: retained branch assets from the original hub.
-- `adapters/`: target tool adaptation.
-- `metadata/resources.yaml`: coding-focused resource registry.
-- `lessons/`: failure memory and improvement notes.
-
-## 9. Run And Verify
-
-```bash
-npm.cmd run demo
-npm.cmd test
-npm.cmd run validate
+```text
+Scenario:
+Readiness:
+Missing or assumed details:
+Improved coding-agent prompt:
 ```
 
-PowerShell users should prefer `npm.cmd` when script execution policy blocks `npm.ps1`.
+When the user asks only for review, lead with issues and do not rewrite the whole prompt unless useful. When the user asks for a final prompt, provide a copy-ready prompt.
+
+## Non-Negotiables
+
+- Do not invent files, logs, command outputs, screenshots, tests, or repository facts.
+- Do not hide uncertainty. Mark unknowns as assumptions or placeholders.
+- Do not grant the target agent broad permission to rewrite unrelated parts of a repository unless the user explicitly asks for that scope.
+- Do not remove verification just because commands are unknown; ask for them or tell the target agent how to discover and report them.
+- Do not claim the prompt is guaranteed to succeed. The skill improves task clarity, execution boundaries, and verifiability.

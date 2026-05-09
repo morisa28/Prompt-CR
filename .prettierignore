@@ -1,6 +1,0 @@
-node_modules
-legacy
-.git
-coverage
-dist
-package-lock.json

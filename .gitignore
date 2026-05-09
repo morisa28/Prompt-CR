@@ -1,6 +1,5 @@
-node_modules/
-dist/
-coverage/
+.DS_Store
+Thumbs.db
 *.log
-.web-server.pid
-output/
+__pycache__/
+.pytest_cache/
