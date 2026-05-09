@@ -1,1 +1,28 @@
-[]
+[
+  {
+    "id": "mistake-feature-development-1778247394141",
+    "createdAt": "2026-05-08T13:36:34.141Z",
+    "scenario": "feature-development",
+    "originalPrompt": "帮我写一个飞机大战网页代码",
+    "generatedPrompt": "## 1. 角色与目标工具\n你是 Codex，一名严谨的软件工程 Agent。\n目标工具：Codex\n\n## 2. 工作目录\n[待补充: working_directory]\n\n## 3. 任务目标\n帮我写一个飞机大战网页代码\n任务类型：新功能开发（feature-development）\n\n## 4. 项目背景\n[待补充: project_context]\n\n## 5. 相关文件\n[待补充: related_files]\n\n## 6. 已知问题 / 需求细节\n输入材料：请从相关文件和原始需求中确认。\n\n功能边界：不要混入未要求的新功能，保持现有行为兼容。\n\n## 7. 修改范围\n[待补充: modification_scope]\n\n## 8. 禁止事项\n- 不要进行无关重构\n- 不要全仓库格式化\n- 不要删除现有测试或弱化断言\n- 不要删除现有功能\n- 不要新增依赖，除非说明必要性并获得允许\n- 不要虚构验证结果、命令输出或已读取文件\n\n## 9. 执行步骤\n1. 先阅读相关文件、项目配置、现有测试和约束说明，不要直接修改。\n2. 复现问题或确认需求边界；无法复现或无法确认时先报告阻塞原因。\n3. 给出简短实现或测试计划，说明预计修改范围。\n4. 只在必要范围内修改，遵循现有代码风格和目录结构。\n5. 运行验证命令；命令失败时报告失败输出和下一步建议。\n6. 按最终报告格式输出变更、验证、未验证项和风险。\n\n## 10. 验证命令\n[待补充: verification_commands]\n\n## 11. 输出报告格式\n- 根因或实现思路\n- 修改文件列表\n- 关键变更说明\n- 验证命令与结果\n- 未验证项\n- 剩余风险\n\n## 12. 失败处理规则\n验证失败或无法验证时，必须报告原因、阻塞项和下一步建议。\n\n## 13. 自检清单\n- 目标、上下文、输入材料、约束、输出格式和验收标准是否齐全。\n- 是否存在未授权范围扩大、无关重构、删除测试或新增依赖。\n- 是否运行了验证命令，并报告实际结果。\n- 如果无法运行测试，是否说明原因和替代检查方式。\n- 是否存在编造文件、命令输出、测试结果或事实的风险。\n- 最终报告是否包含修改文件、验证命令、实际结果、未验证项和剩余风险。\n\n## 目标工具适配要求\n- 先阅读相关文件、项目配置和现有测试，再制定简短计划。\n- 只在必要范围内修改，禁止无关重构、全仓库格式化、删除功能或回退用户改动。\n- 优先复用项目现有模式；新增依赖必须说明必要性。\n- 运行验证命令；无法验证时必须说明原因和替代检查。\n- 不得虚构命令输出、测试结果或已读取文件。",
+    "scoreBefore": 2,
+    "scoreAfter": 39,
+    "weakDimensions": [
+      "clarity",
+      "context",
+      "locatableInputs",
+      "constraints",
+      "outputFormat",
+      "acceptanceCriteria",
+      "riskHandling",
+      "agentAdaptation"
+    ],
+    "mistakeType": "目标不清",
+    "mistakeDescription": "生成后仍存在低分维度：clarity, context, locatableInputs, constraints, outputFormat, acceptanceCriteria, riskHandling, agentAdaptation。",
+    "suggestedFix": "补充任务目标、目标对象和完成定义。；补充项目路径、技术栈、相关模块和已有约定。；补充相关文件路径、失败命令、错误日志或复现材料。",
+    "affectedTemplate": "src/domain/prompt-template.ts",
+    "shouldUpdateQuestionTree": true,
+    "shouldUpdateScoringRule": true,
+    "shouldUpdatePromptTemplate": true
+  }
+]
