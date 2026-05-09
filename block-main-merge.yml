@@ -1,0 +1,28 @@
+name: Block Prompt_CR-skill to main
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+      - ready_for_review
+
+jobs:
+  block-prompt-cr-skill-into-main:
+    name: Block Prompt_CR-skill into main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject forbidden branch merge
+        if: ${{ github.head_ref == 'Prompt_CR-skill' && github.base_ref == 'main' }}
+        run: |
+          echo "Prompt_CR-skill is a permanent isolated skill branch and must never be merged into main."
+          echo "Manually port reviewed files or ideas through a different branch instead."
+          exit 1
+
+      - name: Allow other pull requests
+        if: ${{ !(github.head_ref == 'Prompt_CR-skill' && github.base_ref == 'main') }}
+        run: echo "This pull request does not violate the Prompt_CR-skill branch isolation rule."
